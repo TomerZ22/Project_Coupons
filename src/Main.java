@@ -1,7 +1,19 @@
+import JavaBeans.Company;
+import dao.CompaniesDao;
+import dao.CompaniesDaoImp;
+
+import java.sql.SQLException;
+
 public class Main {
     public static void main(String[] args) {
 
-        System.out.println("Hello World!");
+        Company company1 = new Company("Microsoft","Microsoft@outlook.com","1234");
+        CompaniesDaoImp com = new CompaniesDaoImp();
+        try {
+            com.addCompany(company1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
