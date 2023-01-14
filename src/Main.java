@@ -9,13 +9,15 @@ public class Main {
 
         Company company1 = new Company("Microsoft","Microsoft@outlook.com","1234");
         CompaniesDaoImp com = new CompaniesDaoImp();
-//        try {
-//            com.addCompany(company1);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            com.addCompany(company1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+       }
         company1.setName("Amir");
         com.updateCompany(company1);
+        com.isCompanyExists("Microsoft@outlook.com","1234");
+        com.deleteCompany(1);
 
     }
 
