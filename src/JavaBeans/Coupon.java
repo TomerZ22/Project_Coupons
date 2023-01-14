@@ -116,14 +116,14 @@ public class Coupon {
     @Override
     public String toString() {
         return "Coupon's id: " + id +
-                ", companyId: " + companyId +
-                ", category: " + category +
-                ", title: " + title+
-                ", description: " + description+
-                ", startDate: " + startDate +
-                ", endDate: " + endDate +
-                ", amount: " + amount +
-                ", price: " + price +
-                ", image: " + image;
+                ", Company Id: " + companyId +
+                ", Category: " + category +
+                ", Title: " + title+
+                ", Description: " + description+
+                ", Start Date: " + startDate +
+                ", End Date: " + endDate +
+                ", Amount: " + amount +
+                ", Price: " + price +
+                ", Image: " + image;
     }
 }

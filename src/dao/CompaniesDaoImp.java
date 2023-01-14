@@ -1,11 +1,14 @@
 package dao;
 
 import JavaBeans.Company;
+
+import java.sql.PreparedStatement;
 import java.util.List;
 
 public class CompaniesDaoImp implements CompaniesDao{
     @Override
     public boolean isCompanyExists(String email, String password) {
+
         return false;
     }
 
