@@ -2,6 +2,8 @@ package dao;
 
 import JavaBeans.Company;
 import db.ConnectionPool;
+import Exception.CompanyExistsException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,17 +11,56 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
+
 
 public class CompaniesDaoImp implements CompaniesDao {
     private ConnectionPool pool = ConnectionPool.getInstance();
 
 
+    /**
+     * This method is called only when we delete a company, so we delete all the historic customers buy.
+     *
+     * @param id - company id
+     * @throws SQLException - If failed to connect or detect in the SQL.
+     */
+    public void deleteCustomerBuyHistory(int id) throws SQLException {
+        Connection conn = pool.getConnection();
+        PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons_vs_customers WHERE coupon_id = " + id);
+        ps.execute();
+
+        pool.restoreConnection(conn);
+    }
+
+    /**
+     * This method if for the AdminFacade, when we delete the company, then we delete all the coupons of that company.
+     *
+     * @param id - The id of the company we want to delete
+     * @throws SQLException - If failed to connect or detect in the SQL.
+     */
+    public void deleteCompanyCoupons(int id) throws SQLException {
+        Connection conn = pool.getConnection();
+        PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons.coupons WHERE company_id= " + id);
+        ps.execute();
+
+        pool.restoreConnection(conn);
+    }
 
 
-    public boolean isCompanyExistByName_Email(String name, String email) {
+    /**
+     * This method is to check for company existence in order to add company from the BL AdminFacade
+     *
+     * @param name  - company name
+     * @param email - company email
+     * @return - false if company does not exist
+     * @throws CompanyExistsException - Throws exception if company exists.
+     */
+    public boolean isCompanyExistByName_Email(String name, String email) throws CompanyExistsException {
         ArrayList<Company> companies = getAllCompanies();
-
+        for (Company company : companies) {
+            if (company.getName().equals(name) || company.getEmail().equals(email))
+                throw new CompanyExistsException("Sorry the Name or Email already exists, try different");
+        }
+        return false;
     }
 
     /**
@@ -76,7 +117,7 @@ public class CompaniesDaoImp implements CompaniesDao {
         PreparedStatement ps = con.prepareStatement("select * from companies");
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            if (rs.getString(3).equals(company.getEmail())&&rs.getString(4).equals(company.getPassword())) {
+            if (rs.getString(3).equals(company.getEmail()) && rs.getString(4).equals(company.getPassword())) {
                 PreparedStatement update = con.prepareStatement("UPDATE company SET first_name= ?, last_name= ?, email= ?, password= ? WHERE id= " + rs.getInt(1));
                 update.setString(1, company.getName());
                 update.setString(2, company.getEmail());
@@ -95,23 +136,21 @@ public class CompaniesDaoImp implements CompaniesDao {
         Connection con = pool.getConnection();
         PreparedStatement preparedStatement = con.prepareStatement(" DELETE FROM companies WHERE id =?");
 
-                preparedStatement.setInt(1,companyId);
-                preparedStatement.execute();
-                System.out.println("Company was Successfully Deleted");
-                pool.restoreConnection(con);
-                return;
-            }
-
-
-
-        @Override
-        public Company getOneCompany ( int companyId){
-            return null;
-        }
-
-        @Override
-        public List<Company> getAllCompanies ()
-        {
-            return null;
-        }
+        preparedStatement.setInt(1, companyId);
+        preparedStatement.execute();
+        System.out.println("Company was Successfully Deleted");
+        pool.restoreConnection(con);
+        return;
     }
+
+
+    @Override
+    public Company getOneCompany(int companyId) {
+        return null;
+    }
+
+    @Override
+    public List<Company> getAllCompanies() {
+        return null;
+    }
+}

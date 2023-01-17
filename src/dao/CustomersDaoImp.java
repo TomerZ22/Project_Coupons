@@ -2,7 +2,7 @@ package dao;
 
 import JavaBeans.Customer;
 import db.ConnectionPool;
-
+import Exception.CustomerExistsException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +11,46 @@ import java.util.ArrayList;
 
 public class CustomersDaoImp implements CustomersDao {
     private ConnectionPool pool = ConnectionPool.getInstance();
+
+
+    /**
+     * This method is called in the AdminFacade, in order to delete all coupons of a specific customer.
+     * @param customerId - the customer identifier to delete.
+     * @throws SQLException - If the connection fails or didn't found the DB table.
+     */
+    public void deleteCustomersCoupons(int customerId) throws SQLException{
+        Connection conn = pool.getConnection();
+        PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons_vs_customers WHERE custumers_id=" + customerId);
+        ps.execute();
+        pool.restoreConnection(conn);
+    }
+
+
+
+
+    /**
+     * This method is to check if the customer email is already exist in the database.
+     * @param customer - The customer to check
+     * @return - false if the customer is does not exist in the database.
+     * @throws CustomerExistsException - If the customer does exist
+     * @throws SQLException - If the connection fails or didn't found the DB table.
+     */
+    public boolean isCustomerEmailExists(Customer customer) throws CustomerExistsException, SQLException {
+        Connection conn = pool.getConnection();
+        PreparedStatement ps = conn.prepareStatement("SELECT email FROM customers");
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()) {
+            if(rs.getString(4).equals(customer.getEmail())) {
+                pool.restoreConnection(conn);
+                throw new CustomerExistsException("Customer already exists");
+            }
+        }
+        pool.restoreConnection(conn);
+        return false;
+    }
+
+
+
 
     /**
      * This method returns a boolean if the email address and password are the same in the database.

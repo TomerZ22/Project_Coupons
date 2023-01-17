@@ -1,11 +1,14 @@
 package dao;
 
 import JavaBeans.Customer;
-
+import Exception.CustomerExistsException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface CustomersDao {
+
+    void deleteCustomersCoupons(int customerId) throws SQLException; //This method is for the AdminFacade when we delete an customer.
+    boolean isCustomerEmailExists(Customer customer) throws CustomerExistsException, SQLException; //This method if for the AdminFacade.
     boolean isCustomerExist(String email, String password) throws SQLException;
     void addCustomer(Customer customer) throws SQLException;
     void updateCustomers(Customer customer) throws SQLException;
