@@ -1,12 +1,13 @@
 package bl;
 
-import dao.CompaniesDao;
-import dao.CompaniesDaoImp;
+import dao.*;
+
+import java.sql.SQLException;
 
 public abstract class ClientFacade {
+    protected CompaniesDao companyDao = new CompaniesDaoImp();
+    protected CustomersDao customerDao = new CustomersDaoImp();
+    protected CouponsDao couponDao = new CouponsDaoImp();
 
-//    protected CompaniesDao companyDao = new CompaniesDaoImpl();
-
-    public abstract boolean login(String email, String password);
-
+    public abstract boolean login(String email, String password) throws SQLException;
 }

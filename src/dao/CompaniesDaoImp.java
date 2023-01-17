@@ -6,12 +6,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class CompaniesDaoImp implements CompaniesDao {
     private ConnectionPool pool = ConnectionPool.getInstance();
+
+
+
+
+    public boolean isCompanyExistByName_Email(String name, String email) {
+        ArrayList<Company> companies = getAllCompanies();
+
+    }
 
     /**
      * Method That Check If The Company Exists In The DataBase
