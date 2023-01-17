@@ -64,18 +64,16 @@ public class CompaniesDaoImp implements CompaniesDao {
     @Override
     public void updateCompany(Company company) throws SQLException {
         Connection con = pool.getConnection();
-        PreparedStatement preparedStatement = con.prepareStatement
-                (
-                        "UPDATE companies SET name=? , email=? , password =? WHERE id=?");
         PreparedStatement ps = con.prepareStatement("select * from companies");
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            if (Objects.equals(rs.getString(3), company.getEmail()) && Objects.equals(rs.getString(4), company.getPassword())) {
-                preparedStatement.setString(1, company.getName());
-                preparedStatement.setString(2, company.getEmail());
-                preparedStatement.setString(3, company.getPassword());
-                preparedStatement.setInt(4, rs.getInt(1));
-                preparedStatement.execute();
+            if (rs.getString(3).equals(company.getEmail())&&rs.getString(4).equals(company.getPassword())) {
+                PreparedStatement update = con.prepareStatement("UPDATE company SET first_name= ?, last_name= ?, email= ?, password= ? WHERE id= " + rs.getInt(1));
+                update.setString(1, company.getName());
+                update.setString(2, company.getEmail());
+                update.setString(3, company.getPassword());
+                update.setInt(4, rs.getInt(1));
+                update.execute();
                 System.out.println("Company was Successfully Update");
                 pool.restoreConnection(con);
                 return;

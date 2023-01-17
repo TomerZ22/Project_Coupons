@@ -36,14 +36,6 @@ public class CustomersDaoImp implements CustomersDao {
         return false;
     }
 
-    private void preparedStatement(PreparedStatement ps, Customer customer) throws SQLException {
-        ps.setString(1, customer.getFirstName());
-        ps.setString(2, customer.getLastName());
-        ps.setString(3, customer.getEmail());
-        ps.setString(4, customer.getPassword());
-        ps.execute();
-    }
-
     /**
      * This method Adds a new customer to the database.
      * @param customer - the customer to add to the database.
@@ -54,8 +46,11 @@ public class CustomersDaoImp implements CustomersDao {
         Connection conn = pool.getConnection();
         PreparedStatement ps = conn.prepareStatement("INSERT INTO customers(first_name, last_name, email, password) "
                 + "values(?,?,?,?)");
-        //DRY
-        preparedStatement(ps, customer);
+        ps.setString(1, customer.getFirstName());
+        ps.setString(2, customer.getLastName());
+        ps.setString(3, customer.getEmail());
+        ps.setString(4, customer.getPassword());
+        ps.execute();
         pool.restoreConnection(conn);
     }
 
@@ -67,8 +62,11 @@ public class CustomersDaoImp implements CustomersDao {
         while (rs.next()) {
             if (rs.getString(4).equals(customer.getEmail()) && rs.getString(5).equals(customer.getPassword())) {
                 PreparedStatement update = conn.prepareStatement("UPDATE customers SET first_name= ?, last_name= ?, email= ?, password= ? WHERE id= " + rs.getInt(1));
-                //DRY
-                preparedStatement(ps, customer);
+                update.setString(1, customer.getFirstName());
+                update.setString(1, customer.getLastName());
+                update.setString(1, customer.getEmail());
+                update.setString(1, customer.getPassword());
+                update.execute();
                 break;
             }
         }
@@ -119,14 +117,14 @@ public class CustomersDaoImp implements CustomersDao {
      */
     @Override
     public Customer getOneCustomer(int customerId) throws SQLException {
-        Connection conn = pool.getConnection();
-        PreparedStatement gettingCustomer = conn.prepareStatement("SELECT * FROM customers where id=" + customerId);
+        Connection con = pool.getConnection();
+        PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM customers where id=" + customerId);
         ResultSet rs = gettingCustomer.executeQuery();
         if (rs.next()) {
             return new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
         }
 
-        pool.restoreConnection(conn);
+        pool.restoreConnection(con);
         return null;
     }
 }
