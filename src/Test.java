@@ -1,10 +1,9 @@
 import JavaBeans.Company;
-import dao.CompaniesDao;
 import dao.CompaniesDaoImp;
 
 import java.sql.SQLException;
 
-public class Main {
+public class Test {
     public static void main(String[] args) throws SQLException {
 
         Company company1 = new Company("Microsoft","Microsoft@outlook.com","1234");
