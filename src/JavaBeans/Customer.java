@@ -3,6 +3,7 @@ package JavaBeans;
 public class Customer {
     private int id;
     private String firstName, lastName, email, password;
+    private List<Coupons> coupons;
 
     //cons to select from db
     public Customer(int id, String firstName, String lastName, String email, String password) {
