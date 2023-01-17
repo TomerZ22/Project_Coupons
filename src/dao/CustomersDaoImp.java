@@ -37,6 +37,20 @@ public class CustomersDaoImp implements CustomersDao {
     }
 
     /**
+     * For compatibility and write less code.
+     * @param ps - The prepared statement
+     * @param customer - The customer
+     * @throws SQLException - If error accour during the connection to the DB
+     */
+    private void prepareStatement(PreparedStatement ps, Customer customer) throws SQLException {
+        ps.setString(1, customer.getFirstName());
+        ps.setString(2, customer.getLastName());
+        ps.setString(3, customer.getEmail());
+        ps.setString(4, customer.getPassword());
+        ps.execute();
+    }
+
+    /**
      * This method Adds a new customer to the database.
      * @param customer - the customer to add to the database.
      * @throws SQLException - throws an exception if there were error during the connection to SQL
@@ -46,11 +60,8 @@ public class CustomersDaoImp implements CustomersDao {
         Connection conn = pool.getConnection();
         PreparedStatement ps = conn.prepareStatement("INSERT INTO customers(first_name, last_name, email, password) "
                 + "values(?,?,?,?)");
-        ps.setString(1, customer.getFirstName());
-        ps.setString(2, customer.getLastName());
-        ps.setString(3, customer.getEmail());
-        ps.setString(4, customer.getPassword());
-        ps.execute();
+        //DRY
+        prepareStatement(ps, customer);
         pool.restoreConnection(conn);
     }
 

@@ -1,12 +1,14 @@
 package JavaBeans;
 
+import java.util.List;
+
 public class Customer {
     private int id;
     private String firstName, lastName, email, password;
-    private List<Coupons> coupons;
+    private List<Coupon> coupons;
 
     //cons to select from db
-    public Customer(int id, String firstName, String lastName, String email, String password, List<Coupons> coupons) {
+    public Customer(int id, String firstName, String lastName, String email, String password, List<Coupon> coupons) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
