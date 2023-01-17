@@ -111,7 +111,8 @@ public class CustomersDaoImp implements CustomersDao {
         PreparedStatement query = conn.prepareStatement("SELECT * FROM customers");
         ResultSet rs = query.executeQuery();
         while (rs.next()) {
-            costumers.add(new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));
+            costumers.add(new Customer(rs.getInt(1), rs.getString(2),
+                    rs.getString(3), rs.getString(4), rs.getString(5)));
         }
         if (costumers.size() == 0)
             return null;
