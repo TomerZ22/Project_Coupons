@@ -36,6 +36,14 @@ public class CustomersDaoImp implements CustomersDao {
         return false;
     }
 
+    private void preparedStatement(PreparedStatement ps, Customer customer) throws SQLException {
+        ps.setString(1, customer.getFirstName());
+        ps.setString(2, customer.getLastName());
+        ps.setString(3, customer.getEmail());
+        ps.setString(4, customer.getPassword());
+        ps.execute();
+    }
+
     /**
      * This method Adds a new customer to the database.
      * @param customer - the customer to add to the database.
@@ -46,11 +54,8 @@ public class CustomersDaoImp implements CustomersDao {
         Connection conn = pool.getConnection();
         PreparedStatement ps = conn.prepareStatement("INSERT INTO customers(first_name, last_name, email, password) "
                 + "values(?,?,?,?)");
-        ps.setString(1, customer.getFirstName());
-        ps.setString(2, customer.getLastName());
-        ps.setString(3, customer.getEmail());
-        ps.setString(4, customer.getPassword());
-        ps.execute();
+        //DRY
+        preparedStatement(ps, customer);
         pool.restoreConnection(conn);
     }
 
@@ -62,11 +67,8 @@ public class CustomersDaoImp implements CustomersDao {
         while (rs.next()) {
             if (rs.getString(4).equals(customer.getEmail()) && rs.getString(5).equals(customer.getPassword())) {
                 PreparedStatement update = conn.prepareStatement("UPDATE customers SET first_name= ?, last_name= ?, email= ?, password= ? WHERE id= " + rs.getInt(1));
-                update.setString(1, customer.getFirstName());
-                update.setString(1, customer.getLastName());
-                update.setString(1, customer.getEmail());
-                update.setString(1, customer.getPassword());
-                update.execute();
+                //DRY
+                preparedStatement(ps, customer);
                 break;
             }
         }
