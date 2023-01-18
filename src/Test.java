@@ -5,6 +5,7 @@ import dao.CompaniesDaoImp;
 import dao.CustomersDaoImp;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class Test {
     public static void main(String[] args) throws SQLException {
@@ -26,8 +27,11 @@ public class Test {
 
 
         company1.setName("Amir");
-        com.updateCompany(company1);
-
+        com.isCompanyExists("Microsoft@outlook.com","1234");
+//        com.updateCompany(company1);
+        com.getOneCompany(1);
+        List<Company> companies = com.getAllCompanies();
+        System.out.println(companies);
     }
 
 }

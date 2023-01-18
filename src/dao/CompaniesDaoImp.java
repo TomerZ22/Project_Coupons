@@ -55,11 +55,11 @@ public class CompaniesDaoImp implements CompaniesDao {
      * @throws CompanyExistsException - Throws exception if company exists.
      */
     public boolean isCompanyExistByName_Email(String name, String email) throws CompanyExistsException {
-//        ArrayList<Company> companies = getAllCompanies();
-//        for (Company company : companies) {
-//            if (company.getName().equals(name) || company.getEmail().equals(email))
-//                throw new CompanyExistsException("Sorry the Name or Email already exists, try different");
-//        }
+        ArrayList<Company> companies = getAllCompanies();
+        for (Company company : companies) {
+            if (company.getName().equals(name) || company.getEmail().equals(email))
+                throw new CompanyExistsException("Sorry the Name or Email already exists, try different");
+        }
         return false;
     }
 

@@ -15,6 +15,6 @@ public interface CompaniesDao {
     void addCompany(Company company) throws SQLException;
     void updateCompany(Company company) throws SQLException;
     void deleteCompany(int companyId) throws SQLException;
-    Company getOneCompany(int companyId);
-    List<Company> getAllCompanies();
+    Company getOneCompany(int companyId) throws SQLException;
+    List<Company> getAllCompanies() throws SQLException;
 }

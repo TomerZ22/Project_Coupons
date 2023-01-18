@@ -1,19 +1,18 @@
 package JavaBeans;
 
-import java.util.List;
-
 public class Customer {
     private int id;
     private String firstName, lastName, email, password;
-    private List<Coupon> coupons;
+    private List<Coupons> coupons;
 
     //cons to select from db
-    public Customer(int id, String firstName, String lastName, String email, String password) {
+    public Customer(int id, String firstName, String lastName, String email, String password, List<Coupons> coupons) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.coupons=coupons;
     }
     //cons to insert into db
     public Customer(String firstName, String lastName, String email, String password) {
@@ -57,10 +56,6 @@ public class Customer {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public List<Coupon> getCoupons() {
-        return coupons;
     }
 
     @Override
