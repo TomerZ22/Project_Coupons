@@ -18,7 +18,7 @@ public class CompaniesDaoImp implements CompaniesDao {
 
 
     /**
-     * This method is called only when we delete a company, hence we delete all the history customers purchase.
+     * This method is called only when we delete a company, hence we delete all the history of customers purchase.
      *
      * @param id - company id
      * @throws SQLException - If failed to connect or detect in the SQL.
