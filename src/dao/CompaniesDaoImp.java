@@ -18,12 +18,12 @@ public class CompaniesDaoImp implements CompaniesDao {
 
 
     /**
-     * This method is called only when we delete a company, so we delete all the historic customers buy.
+     * This method is called only when we delete a company, hence we delete all the history of customers purchase.
      *
      * @param id - company id
      * @throws SQLException - If failed to connect or detect in the SQL.
      */
-    public void deleteCustomerBuyHistory(int id) throws SQLException {
+    public void deleteCustomerPurchaseHistory(int id) throws SQLException {
         Connection conn = pool.getConnection();
         PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons_vs_customers WHERE coupon_id = " + id);
         ps.execute();
