@@ -25,7 +25,7 @@ public class AdminFacade extends ClientFacade {
 
     public void deleteCompany(Company company) throws SQLException{
         companyDao.deleteCompanyCoupons(company.getId());
-        companyDao.deleteCustomerBuyHistory(company.getId());
+        companyDao.deleteCustomerPurchaseHistory(company.getId());
         companyDao.deleteCompany(company.getId());
     }
 
