@@ -3,6 +3,7 @@ package dao;
 import JavaBeans.Customer;
 import db.ConnectionPool;
 import Exception.CustomerExistsException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,10 +16,11 @@ public class CustomersDaoImp implements CustomersDao {
 
     /**
      * This method is called in the AdminFacade, in order to delete all coupons of a specific customer.
+     *
      * @param customerId - the customer identifier to delete.
      * @throws SQLException - If the connection fails or didn't found the DB table.
      */
-    public void deleteCustomersCoupons(int customerId) throws SQLException{
+    public void deleteCustomersCoupons(int customerId) throws SQLException {
         Connection conn = pool.getConnection();
         PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons_vs_customers WHERE custumers_id=" + customerId);
         ps.execute();
@@ -26,21 +28,20 @@ public class CustomersDaoImp implements CustomersDao {
     }
 
 
-
-
     /**
      * This method is to check if the customer email is already exist in the database.
+     *
      * @param customer - The customer to check
      * @return - false if the customer is does not exist in the database.
      * @throws CustomerExistsException - If the customer does exist
-     * @throws SQLException - If the connection fails or didn't found the DB table.
+     * @throws SQLException            - If the connection fails or didn't found the DB table.
      */
     public boolean isCustomerEmailExists(Customer customer) throws CustomerExistsException, SQLException {
         Connection conn = pool.getConnection();
         PreparedStatement ps = conn.prepareStatement("SELECT email FROM customers");
         ResultSet rs = ps.executeQuery();
-        while(rs.next()) {
-            if(rs.getString(4).equals(customer.getEmail())) {
+        while (rs.next()) {
+            if (rs.getString(4).equals(customer.getEmail())) {
                 pool.restoreConnection(conn);
                 throw new CustomerExistsException("Customer already exists");
             }
@@ -48,8 +49,6 @@ public class CustomersDaoImp implements CustomersDao {
         pool.restoreConnection(conn);
         return false;
     }
-
-
 
 
     /**
@@ -78,7 +77,8 @@ public class CustomersDaoImp implements CustomersDao {
 
     /**
      * For compatibility and write less code.
-     * @param ps - The prepared statement
+     *
+     * @param ps       - The prepared statement
      * @param customer - The customer
      * @throws SQLException - If error accour during the connection to the DB
      */
@@ -92,6 +92,7 @@ public class CustomersDaoImp implements CustomersDao {
 
     /**
      * This method Adds a new customer to the database.
+     *
      * @param customer - the customer to add to the database.
      * @throws SQLException - throws an exception if there were error during the connection to SQL
      */
@@ -105,27 +106,29 @@ public class CustomersDaoImp implements CustomersDao {
         pool.restoreConnection(conn);
     }
 
+    public int getCustomerID(Customer customer) throws SQLException {
+
+        return -1;
+    }
+
     @Override
     public void updateCustomers(Customer customer) throws SQLException {
         Connection conn = pool.getConnection();
-        PreparedStatement ps = conn.prepareStatement("select * from customers");
+        PreparedStatement ps = conn.prepareStatement("select * from customers where customer_id =" + customer.getId());
         ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            if (rs.getString(4).equals(customer.getEmail()) && rs.getString(5).equals(customer.getPassword())) {
-                PreparedStatement update = conn.prepareStatement("UPDATE customers SET first_name= ?, last_name= ?, email= ?, password= ? WHERE id= " + rs.getInt(1));
-                update.setString(1, customer.getFirstName());
-                update.setString(1, customer.getLastName());
-                update.setString(1, customer.getEmail());
-                update.setString(1, customer.getPassword());
-                update.execute();
-                break;
-            }
-        }
+        PreparedStatement update = conn.prepareStatement("UPDATE customers SET first_name= ?, last_name= ?, email= ?, password= ? WHERE id= " + rs.getInt(1));
+        update.setString(1, customer.getFirstName());
+        update.setString(1, customer.getLastName());
+        update.setString(1, customer.getEmail());
+        update.setString(1, customer.getPassword());
+        update.execute();
+
         pool.restoreConnection(conn);
     }
 
     /**
      * This method deletes the customer from the database by its ID.
+     *
      * @param customerId - ID of the customer to be deleted from the database.
      * @throws SQLException - throws an exception during the connection to the SQL.
      */
@@ -140,6 +143,7 @@ public class CustomersDaoImp implements CustomersDao {
 
     /**
      * This method return an array list of the costumers in the database.
+     *
      * @return - An array list of costumers or null if it's empty.
      * @throws SQLException - throws an exception if there was an error during the connection to the SQL.
      */
@@ -163,6 +167,7 @@ public class CustomersDaoImp implements CustomersDao {
 
     /**
      * This method returns you a costumer by its ID.
+     *
      * @param customerId - The ID of the customer to retrieve.
      * @return - The costumer by its ID or null if there is no such id in the DB.
      * @throws SQLException - Throws an exception if there was an error during the connection to the SQL.
