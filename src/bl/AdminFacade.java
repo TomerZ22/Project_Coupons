@@ -29,11 +29,11 @@ public class AdminFacade extends ClientFacade {
         companyDao.deleteCompany(company.getId());
     }
 
-    public List<Company> companies(){
+    public List<Company> companies() throws SQLException {
         return companyDao.getAllCompanies();
     }
 
-    public Company getCompanyById(int id){
+    public Company getCompanyById(int id) throws SQLException {
         return companyDao.getOneCompany(id);
     }
 
