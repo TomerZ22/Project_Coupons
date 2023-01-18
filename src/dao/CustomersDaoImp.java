@@ -114,14 +114,8 @@ public class CustomersDaoImp implements CustomersDao {
     @Override
     public void updateCustomers(Customer customer) throws SQLException {
         Connection conn = pool.getConnection();
-        PreparedStatement ps = conn.prepareStatement("select * from customers where customer_id =" + customer.getId());
-        ResultSet rs = ps.executeQuery();
-        PreparedStatement update = conn.prepareStatement("UPDATE customers SET first_name= ?, last_name= ?, email= ?, password= ? WHERE id= " + rs.getInt(1));
-        update.setString(1, customer.getFirstName());
-        update.setString(1, customer.getLastName());
-        update.setString(1, customer.getEmail());
-        update.setString(1, customer.getPassword());
-        update.execute();
+        PreparedStatement update = conn.prepareStatement("UPDATE customers SET first_name= ?, last_name= ?, email= ?, password= ? WHERE id= " + customer.getId());
+        prepareStatement(update, customer);
 
         pool.restoreConnection(conn);
     }
