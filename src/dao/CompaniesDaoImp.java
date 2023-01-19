@@ -1,6 +1,7 @@
 package dao;
 
 import JavaBeans.Company;
+import JavaBeans.Customer;
 import db.ConnectionPool;
 import Exception.CompanyExistsException;
 
@@ -145,12 +146,26 @@ public class CompaniesDaoImp implements CompaniesDao {
 
 
     @Override
-    public Company getOneCompany(int companyId) {
+    public Company getOneCompany(int companyId)
+    {
         return null;
     }
 
     @Override
-    public List<Company> getAllCompanies() {
-        return null;
+    public List<Company> getAllCompanies() throws SQLException {
+        ArrayList<Company> companies = new ArrayList<>();
+
+        Connection con = pool.getConnection();
+        PreparedStatement query = con.prepareStatement("SELECT * FROM customers");
+        ResultSet rs = query.executeQuery();
+        while (rs.next()) {
+            companies.add(new Company(rs.getInt(1), rs.getString(2),
+                    rs.getString(3), rs.getString(4)));
+        }
+        if (companies.size() == 0)
+            return null;
+
+        pool.restoreConnection(con);
+        return companies;
     }
 }
