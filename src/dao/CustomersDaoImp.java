@@ -4,10 +4,7 @@ import JavaBeans.Customer;
 import db.ConnectionPool;
 import Exception.CustomerExistsException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class CustomersDaoImp implements CustomersDao {
@@ -100,9 +97,17 @@ public class CustomersDaoImp implements CustomersDao {
     public void addCustomer(Customer customer) throws SQLException {
         Connection conn = pool.getConnection();
         PreparedStatement ps = conn.prepareStatement("INSERT INTO customers(first_name, last_name, email, password) "
-                + "values(?,?,?,?)");
+                + "values(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
         //DRY
         prepareStatement(ps, customer);
+        ResultSet rs = ps.getGeneratedKeys();
+        int id = 0;
+        while (rs.next()) {
+            id = rs.getInt(1);
+        }
+        customer.setId(id);
+
+
         pool.restoreConnection(conn);
     }
 

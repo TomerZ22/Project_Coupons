@@ -19,20 +19,23 @@ public class Test {
 //        }
 
         Customer customer1 = new Customer("asdas", "asda", "asd","asd");
-        customer1.setFirstName("John");
-        customer1.setPassword("lol");
-        customer1 = new Customer(1, "john", "aaa", "bbb","asd");
-        System.out.println(customer1);
-        CustomersDaoImp c = new CustomersDaoImp();
-
-
-        company1.setName("Amir");
-        com.isCompanyExists("Microsoft@outlook.com","1234");
-//        com.updateCompany(company1);
-        com.getOneCompany(1);
-        List<Company> companies = com.getAllCompanies();
-        System.out.println(companies);
-        com.getOneCompany(1);
+        CustomersDaoImp customersDaoImp = new CustomersDaoImp();
+        customersDaoImp.addCustomer(customer1);
+        System.out.println(customer1.getId());
+//        customer1.setFirstName("John");
+//        customer1.setPassword("lol");
+//        customer1 = new Customer(1, "john", "aaa", "bbb","asd");
+//        System.out.println(customer1);
+//        CustomersDaoImp c = new CustomersDaoImp();
+//
+//
+//        company1.setName("Amir");
+//        com.isCompanyExists("Microsoft@outlook.com","1234");
+////        com.updateCompany(company1);
+//        com.getOneCompany(1);
+//        List<Company> companies = com.getAllCompanies();
+//        System.out.println(companies);
+//        com.getOneCompany(1);
     }
 
 }

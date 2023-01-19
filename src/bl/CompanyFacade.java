@@ -36,17 +36,16 @@ public class CompanyFacade extends ClientFacade
     }
     public List<Coupon> getCompanyCoupons () throws SQLException
     {
-
+        return null;
     }
 
     public List<Coupon> getCompanyCoupons (Category category) throws SQLException
     {
-
+        return null;
     }
     public List<Coupon> getCompanyCoupons (double maxPrice) throws SQLException
     {
-
-
+        return null;
     }
     public Company getCompanyDetails() throws SQLException {
         return companyDao.getOneCompany(companyID);
