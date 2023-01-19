@@ -142,22 +142,22 @@ public class CustomersDaoImp implements CustomersDao {
      * @throws SQLException - throws an exception if there was an error during the connection to the SQL.
      */
     @Override
-    public ArrayList<Customer> getAllCustomers() throws SQLException {
-        ArrayList<Customer> costumers = new ArrayList<>();
+   public ArrayList<Customer> getAllCustomers() throws SQLException {
+       ArrayList<Customer> costumers = new ArrayList<>();
 
-        Connection conn = pool.getConnection();
-        PreparedStatement query = conn.prepareStatement("SELECT * FROM customers");
-        ResultSet rs = query.executeQuery();
-        while (rs.next()) {
-            costumers.add(new Customer(rs.getInt(1), rs.getString(2),
-                    rs.getString(3), rs.getString(4), rs.getString(5)));
-        }
-        if (costumers.size() == 0)
-            return null;
+       Connection conn = pool.getConnection();
+       PreparedStatement query = conn.prepareStatement("SELECT * FROM customers");
+       ResultSet rs = query.executeQuery();
+       while (rs.next()) {
+           costumers.add(new Customer(rs.getInt(1), rs.getString(2),
+                  rs.getString(3), rs.getString(4), rs.getString(5)));
+       }
+      if (costumers.size() == 0)
+          return null;
 
-        pool.restoreConnection(conn);
+       pool.restoreConnection(conn);
         return costumers;
-    }
+   }
 
     /**
      * This method returns you a costumer by its ID.
@@ -166,16 +166,16 @@ public class CustomersDaoImp implements CustomersDao {
      * @return - The costumer by its ID or null if there is no such id in the DB.
      * @throws SQLException - Throws an exception if there was an error during the connection to the SQL.
      */
-    @Override
+   @Override
     public Customer getOneCustomer(int customerId) throws SQLException {
-        Connection con = pool.getConnection();
-        PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM customers where id=" + customerId);
+       Connection con = pool.getConnection();
+       PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM customers where id=" + customerId);
         ResultSet rs = gettingCustomer.executeQuery();
         if (rs.next()) {
             return new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
         }
 
         pool.restoreConnection(con);
-        return null;
+      return null;
     }
 }
