@@ -32,6 +32,7 @@ public class Test {
         com.getOneCompany(1);
         List<Company> companies = com.getAllCompanies();
         System.out.println(companies);
+        com.getOneCompany(1);
     }
 
 }

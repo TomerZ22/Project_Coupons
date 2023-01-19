@@ -1,6 +1,7 @@
 package dao;
 
 import JavaBeans.Company;
+import JavaBeans.Customer;
 import db.ConnectionPool;
 import Exception.CompanyExistsException;
 
@@ -54,8 +55,8 @@ public class CompaniesDaoImp implements CompaniesDao {
      * @return - false if company does not exist
      * @throws CompanyExistsException - Throws exception if company exists.
      */
-    public boolean isCompanyExistByName_Email(String name, String email) throws CompanyExistsException {
-        ArrayList<Company> companies = getAllCompanies();
+    public boolean isCompanyExistByName_Email(String name, String email) throws CompanyExistsException, SQLException {
+        ArrayList<Company> companies = (ArrayList<Company>) getAllCompanies();
         for (Company company : companies) {
             if (company.getName().equals(name) || company.getEmail().equals(email))
                 throw new CompanyExistsException("Sorry the Name or Email already exists, try different");
@@ -122,6 +123,11 @@ public class CompaniesDaoImp implements CompaniesDao {
 
     }
 
+    /**
+     * This Method Deletes Company By ID
+     * @param companyId
+     * @throws SQLException
+     */
     @Override
     public void deleteCompany(int companyId) throws SQLException {
         Connection con = pool.getConnection();
@@ -134,14 +140,47 @@ public class CompaniesDaoImp implements CompaniesDao {
         return;
     }
 
-
+    /**
+     * This Method Get One Company From The DataBase
+     * @param companyId
+     * @return
+     * @throws SQLException
+     */
     @Override
-    public Company getOneCompany(int companyId) {
+    public Company getOneCompany(int companyId) throws SQLException {
+        Connection con = pool.getConnection();
+        PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM companies where id=" + companyId);
+        ResultSet rs = gettingCustomer.executeQuery();
+        if (rs.next()) {
+            return new Company(rs.getInt(1), rs.getString(2),
+                    rs.getString(3), rs.getString(4));
+
+        }
+        System.out.println("Operation Was Successful");
+        pool.restoreConnection(con);
         return null;
     }
 
+    /**
+     * This Method Gets All The Companies From The DataBase
+     * @return
+     * @throws SQLException
+     */
     @Override
-    public List<Company> getAllCompanies() {
-        return null;
+    public List<Company> getAllCompanies() throws SQLException {
+        ArrayList<Company> companies = new ArrayList<>();
+
+        Connection con = pool.getConnection();
+        PreparedStatement query = con.prepareStatement("SELECT * FROM customers");
+        ResultSet rs = query.executeQuery();
+        while (rs.next()) {
+            companies.add(new Company(rs.getInt(1), rs.getString(2),
+                    rs.getString(3), rs.getString(4)));
+        }
+        if (companies.size() == 0)
+            return null;
+        System.out.println("Operation Was Successful");
+        pool.restoreConnection(con);
+        return companies;
     }
 }
