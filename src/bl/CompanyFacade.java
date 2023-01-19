@@ -3,41 +3,53 @@ package bl;
 import JavaBeans.Category;
 import JavaBeans.Company;
 import JavaBeans.Coupon;
-import JavaBeans.Customer;
+import db.ConnectionPool;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 public class CompanyFacade extends ClientFacade
 {
-    public CompanyFacade(int customerID) {
-        this.customerID = customerID;
+
+    public CompanyFacade(int companyID) {
+        this.companyID = companyID;
     }
 
-    private int customerID;
+    private int companyID;
     @Override
     public boolean login(String email, String password) throws SQLException {
         return false;
     }
 
-    public void purchaseCoupon(Coupon coupon) throws SQLException {
+    public void addCoupons(Coupon coupon) throws SQLException {
 
     }
 
-    public List<Coupon> getCustomerCoupon(Coupon coupon)
+    public void updateCoupons(Coupon coupon) throws SQLException {
+
+    }
+    public void deleteCoupons(Coupon coupon) throws SQLException {
+        companyDao.deleteCompanyCoupons(coupon.getId());
+    }
+    public List<Coupon> getCompanyCoupons () throws SQLException
     {
 
     }
 
-    public List<Coupon> getCustomerCoupons (Category category) throws SQLException
+    public List<Coupon> getCompanyCoupons (Category category) throws SQLException
     {
 
     }
-    public List<Coupon> getCustomerCoupons (double maxPrice) throws SQLException
+    public List<Coupon> getCompanyCoupons (double maxPrice) throws SQLException
     {
 
+
     }
-    public Customer getCustomerDetails() throws SQLException {
-        return customerDao.getOneCustomer(customerID);
+    public Company getCompanyDetails() throws SQLException {
+        return companyDao.getOneCompany(companyID);
     }
 
 }
