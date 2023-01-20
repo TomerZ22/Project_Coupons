@@ -1,4 +1,4 @@
-package dao;
+package dao.daoInterfaces;
 
 import JavaBeans.Coupon;
 

@@ -1,6 +1,9 @@
 package bl;
 
 import dao.*;
+import dao.daoInterfaces.CompaniesDao;
+import dao.daoInterfaces.CouponsDao;
+import dao.daoInterfaces.CustomersDao;
 
 import java.sql.SQLException;
 

@@ -1,7 +1,8 @@
 package dao;
 
-import JavaBeans.Category;
+import enums.Category;
 import JavaBeans.Coupon;
+import dao.daoInterfaces.CouponsDao;
 import db.ConnectionPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

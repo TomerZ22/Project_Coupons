@@ -1,7 +1,7 @@
 package dao;
 
 import JavaBeans.Company;
-import JavaBeans.Customer;
+import dao.daoInterfaces.CompaniesDao;
 import db.ConnectionPool;
 import Exception.CompanyExistsException;
 

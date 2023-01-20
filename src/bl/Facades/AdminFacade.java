@@ -1,4 +1,4 @@
-package bl;
+package bl.Facades;
 
 import Exception.CustomerExistsException;
 import JavaBeans.Company;
@@ -12,6 +12,7 @@ import java.util.List;
 
 import Exception.CompanyExistsException;
 import JavaBeans.Customer;
+import bl.ClientFacade;
 import db.ConnectionPool;
 
 public class AdminFacade extends ClientFacade {
@@ -51,7 +52,7 @@ public class AdminFacade extends ClientFacade {
         companyDao.deleteCompany(company.getId());
     }
 
-    public List<Company> companies() throws SQLException {
+    public List<Company> getAllCompanies() throws SQLException {
         return companyDao.getAllCompanies();
     }
 
@@ -65,7 +66,7 @@ public class AdminFacade extends ClientFacade {
     }
 
     public void updateCustomer(Customer customer) throws SQLException {
-        //Cant update customer ID - we don't have the SETTER for id so not need to check.
+        //Cant update customer ID
         customerDao.updateCustomers(customer);
     }
 

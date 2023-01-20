@@ -1,4 +1,4 @@
-package bl;
+package bl.Facades;
 
 public class CustomerFacade {
 }

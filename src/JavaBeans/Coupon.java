@@ -1,5 +1,7 @@
 package JavaBeans;
 
+import enums.Category;
+
 import java.sql.Date;
 
 public class Coupon {

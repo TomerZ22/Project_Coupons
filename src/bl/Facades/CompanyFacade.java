@@ -1,12 +1,10 @@
-package bl;
+package bl.Facades;
 
-import JavaBeans.Category;
+import enums.Category;
 import JavaBeans.Company;
 import JavaBeans.Coupon;
-import db.ConnectionPool;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import bl.ClientFacade;
+
 import java.sql.SQLException;
 import java.util.List;
 

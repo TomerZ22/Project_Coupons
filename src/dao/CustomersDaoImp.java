@@ -1,6 +1,7 @@
 package dao;
 
 import JavaBeans.Customer;
+import dao.daoInterfaces.CustomersDao;
 import db.ConnectionPool;
 import Exception.CustomerExistsException;
 
