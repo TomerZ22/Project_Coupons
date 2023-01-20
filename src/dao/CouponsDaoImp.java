@@ -3,7 +3,6 @@ package dao;
 import JavaBeans.Category;
 import JavaBeans.Coupon;
 import db.ConnectionPool;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -108,4 +107,6 @@ public class CouponsDaoImp implements CouponsDao {
         System.out.println("coupon purchase deleted successfully");
         pool.restoreConnection(con);
     }
+
+
 }

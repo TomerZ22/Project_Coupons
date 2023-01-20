@@ -4,7 +4,6 @@ import JavaBeans.Category;
 import JavaBeans.Company;
 import JavaBeans.Coupon;
 import db.ConnectionPool;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,11 +23,18 @@ public class CompanyFacade extends ClientFacade
         return false;
     }
 
-    public void addCoupons(Coupon coupon) throws SQLException {
-
+    public void addCoupons(Coupon coupon)throws SQLException {
+        if (!companyDao.equals(coupon.getTitle()));
+        {
+        System.out.println("The Operation was A Success");
+            couponDao.addCoupon(coupon);
+        }
+        System.out.println("We Didn't Got It");
     }
 
-    public void updateCoupons(Coupon coupon) throws SQLException {
+
+    public void updateCoupons(Coupon coupon) throws SQLException
+    {
 
     }
     public void deleteCoupons(Coupon coupon) throws SQLException {
