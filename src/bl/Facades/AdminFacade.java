@@ -46,12 +46,23 @@ public class AdminFacade extends ClientFacade {
         pool.restoreConnection(conn);
     }
 
+    /**
+     * This method is called to delete a company, its coupons, and its customers
+     * purchases history from the database.
+     * @param company - The company to delete.
+     * @throws SQLException - If an error occurs during connection to the database.
+     */
     public void deleteCompany(Company company) throws SQLException {
         companyDao.deleteCompanyCoupons(company.getId());
         companyDao.deleteCustomerPurchaseHistory(company.getId());
         companyDao.deleteCompany(company.getId());
     }
 
+    /**
+     * This method returns in a List, all the companies that are in the DB table.
+     * @return - An List of companies.
+     * @throws SQLException - If an error occurs during the operation with the DB.
+     */
     public List<Company> getAllCompanies() throws SQLException {
         return companyDao.getAllCompanies();
     }
@@ -65,11 +76,21 @@ public class AdminFacade extends ClientFacade {
             customerDao.addCustomer(customer);
     }
 
+    /**
+     * This method updates the customer, but you CANNOT update the customer ID!.
+     * @param customer - The customer to update.
+     * @throws SQLException - If something goes wrong during the connection to the DB.
+     */
     public void updateCustomer(Customer customer) throws SQLException {
         //Cant update customer ID
         customerDao.updateCustomers(customer);
     }
 
+    /**
+     * The method deletes the customer coupons and then customer itself from the database.
+     * @param customerID - Customer ID to be deleted.
+     * @throws SQLException - If there was an error deleting the customer or connecting to the DB.
+     */
     public void deleteCustomer(int customerID) throws SQLException {
         customerDao.deleteCustomersCoupons(customerID);
         customerDao.deleteCustomer(customerID);
@@ -79,9 +100,15 @@ public class AdminFacade extends ClientFacade {
         return customerDao.getAllCustomers();
     }
 
+    /**
+     * The method returns a Customer from the database by its ID.
+     * @param id - the ID of the Customer.
+     * @return - the Customer.
+     * @throws SQLException - if an error occurs while retrieving the Customer or
+     *                        connecting to the database is encountered.
+     */
     public Customer getCustomerByID(int id) throws SQLException {
         return customerDao.getOneCustomer(id);
     }
-
 
 }

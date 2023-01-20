@@ -11,12 +11,11 @@ import java.util.ArrayList;
 public class CustomersDaoImp implements CustomersDao {
     private ConnectionPool pool = ConnectionPool.getInstance();
 
-
     /**
      * This method is called in the AdminFacade, in order to delete all coupons of a specific customer.
      *
      * @param customerId - the customer identifier to delete.
-     * @throws SQLException - If the connection fails or didn't found the DB table.
+     * @throws SQLException - If the connection fails or didn't find the DB table.
      */
     public void deleteCustomersCoupons(int customerId) throws SQLException {
         Connection conn = pool.getConnection();
