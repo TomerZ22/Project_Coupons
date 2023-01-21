@@ -100,13 +100,13 @@ public class CustomersDaoImp implements CustomersDao {
                 + "values(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
         //DRY
         prepareStatement(ps, customer);
+
         ResultSet rs = ps.getGeneratedKeys();
         int id = 0;
         while (rs.next()) {
             id = rs.getInt(1);
         }
         customer.setId(id);
-
 
         pool.restoreConnection(conn);
     }
@@ -115,7 +115,8 @@ public class CustomersDaoImp implements CustomersDao {
     @Override
     public void updateCustomers(Customer customer) throws SQLException {
         Connection conn = pool.getConnection();
-        PreparedStatement update = conn.prepareStatement("UPDATE customers SET first_name= ?, last_name= ?, email= ?, password= ? WHERE id= " + customer.getId());
+        PreparedStatement update = conn.prepareStatement("UPDATE customers SET first_name= ?, last_name= ?, email= ?, password= ?" +
+                " WHERE id= " + customer.getId());
         prepareStatement(update, customer);
 
         pool.restoreConnection(conn);
