@@ -88,7 +88,7 @@ public class CustomersDaoImp implements CustomersDao {
     }
 
     /**
-     * This method Adds a new customer to the database.
+     * This method Adds a new customer to the database and returns it ID.
      *
      * @param customer - the customer to add to the database.
      * @throws SQLException - throws an exception if there were error during the connection to SQL
@@ -111,10 +111,6 @@ public class CustomersDaoImp implements CustomersDao {
         pool.restoreConnection(conn);
     }
 
-    public int getCustomerID(Customer customer) throws SQLException {
-
-        return -1;
-    }
 
     @Override
     public void updateCustomers(Customer customer) throws SQLException {
