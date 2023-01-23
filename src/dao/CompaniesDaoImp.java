@@ -1,7 +1,7 @@
 package dao;
 
 import JavaBeans.Company;
-import dao.daoInterfaces.CompaniesDao;
+import JavaBeans.Customer;
 import db.ConnectionPool;
 import Exception.CompanyExistsException;
 
@@ -17,7 +17,6 @@ import java.util.Objects;
 public class CompaniesDaoImp implements CompaniesDao {
     private ConnectionPool pool = ConnectionPool.getInstance();
 
-
     /**
      * This method is called only when we delete a company, hence we delete all the history of customers purchase.
      *
@@ -28,7 +27,6 @@ public class CompaniesDaoImp implements CompaniesDao {
         Connection conn = pool.getConnection();
         PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons_vs_customers WHERE coupon_id = " + id);
         ps.execute();
-
         pool.restoreConnection(conn);
     }
 
@@ -42,7 +40,6 @@ public class CompaniesDaoImp implements CompaniesDao {
         Connection conn = pool.getConnection();
         PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons.coupons WHERE company_id= " + id);
         ps.execute();
-
         pool.restoreConnection(conn);
     }
 
@@ -79,7 +76,6 @@ public class CompaniesDaoImp implements CompaniesDao {
         ResultSet rs = preparedStatement.executeQuery();
         while (rs.next())
             if (Objects.equals(rs.getString(3), email) && Objects.equals(rs.getString(4), password)) {
-                preparedStatement.execute();
                 System.out.println("Company Exist");
                 pool.restoreConnection(con);
             }
@@ -119,8 +115,9 @@ public class CompaniesDaoImp implements CompaniesDao {
         ps.setString(1, company.getName());
         ps.setString(2, company.getEmail());
         ps.setString(3, company.getPassword());
-
-
+        ps.execute();
+        System.out.println("Company updated successfully");
+        pool.restoreConnection(con);
     }
 
     /**
@@ -171,7 +168,7 @@ public class CompaniesDaoImp implements CompaniesDao {
         ArrayList<Company> companies = new ArrayList<>();
 
         Connection con = pool.getConnection();
-        PreparedStatement query = con.prepareStatement("SELECT * FROM customers");
+        PreparedStatement query = con.prepareStatement("SELECT * FROM companies");
         ResultSet rs = query.executeQuery();
         while (rs.next()) {
             companies.add(new Company(rs.getInt(1), rs.getString(2),
