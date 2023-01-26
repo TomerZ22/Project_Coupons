@@ -14,9 +14,10 @@ import java.util.List;
 public class CompanyFacade extends ClientFacade
 {
 
-    public CompanyFacade(int companyID) {
-        this.companyID = companyID;
-    }
+
+//    public CompanyFacade(int companyID) {
+//        this.companyID = companyID;
+//    }
 
     private int companyID;
     @Override
