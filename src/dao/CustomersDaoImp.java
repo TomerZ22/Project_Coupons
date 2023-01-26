@@ -60,15 +60,15 @@ public class CustomersDaoImp implements CustomersDao {
     public int isCustomerExist(String email, String password) throws SQLException {
         Connection con = pool.getConnection();
         PreparedStatement ps = con.prepareStatement("SELECT * FROM customers where email=? and password=?");
-        ps.setString(1,email);
-        ps.setString(2,password);
+        ps.setString(1, email);
+        ps.setString(2, password);
         ResultSet rs = ps.executeQuery();
-        int id=-1;
-            if (rs.next()) {
-                id = rs.getInt(1);
-            }
-            pool.restoreConnection(con);
-                return id;
+        int id = -1;
+        if (rs.next()) {
+            id = rs.getInt(1);
+        }
+        pool.restoreConnection(con);
+        return id;
     }
 
     /**
@@ -99,13 +99,10 @@ public class CustomersDaoImp implements CustomersDao {
                 + "values(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
         //DRY
         prepareStatement(ps, customer);
-
         ResultSet rs = ps.getGeneratedKeys();
-        int id = 0;
-        while (rs.next()) {
-            id = rs.getInt(1);
+        if (rs.next()) {
+            customer.setId(rs.getInt(1));
         }
-        customer.setId(id);
 
         pool.restoreConnection(conn);
     }
@@ -143,22 +140,22 @@ public class CustomersDaoImp implements CustomersDao {
      * @throws SQLException - throws an exception if there was an error during the connection to the SQL.
      */
     @Override
-   public ArrayList<Customer> getAllCustomers() throws SQLException {
-       ArrayList<Customer> costumers = new ArrayList<>();
+    public ArrayList<Customer> getAllCustomers() throws SQLException {
+        ArrayList<Customer> costumers = new ArrayList<>();
 
-       Connection conn = pool.getConnection();
-       PreparedStatement query = conn.prepareStatement("SELECT * FROM customers");
-       ResultSet rs = query.executeQuery();
-       while (rs.next()) {
-           costumers.add(new Customer(rs.getInt(1), rs.getString(2),
-                  rs.getString(3), rs.getString(4), rs.getString(5)));
-       }
-      if (costumers.size() == 0)
-          return null;
+        Connection conn = pool.getConnection();
+        PreparedStatement query = conn.prepareStatement("SELECT * FROM customers");
+        ResultSet rs = query.executeQuery();
+        while (rs.next()) {
+            costumers.add(new Customer(rs.getInt(1), rs.getString(2),
+                    rs.getString(3), rs.getString(4), rs.getString(5)));
+        }
+        if (costumers.size() == 0)
+            return null;
 
-       pool.restoreConnection(conn);
+        pool.restoreConnection(conn);
         return costumers;
-   }
+    }
 
     /**
      * This method returns you a costumer by its ID.
@@ -167,16 +164,16 @@ public class CustomersDaoImp implements CustomersDao {
      * @return - The costumer by its ID or null if there is no such id in the DB.
      * @throws SQLException - Throws an exception if there was an error during the connection to the SQL.
      */
-   @Override
+    @Override
     public Customer getOneCustomer(int customerId) throws SQLException {
-       Connection con = pool.getConnection();
-       PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM customers where id=" + customerId);
+        Connection con = pool.getConnection();
+        PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM customers where id=" + customerId);
         ResultSet rs = gettingCustomer.executeQuery();
         if (rs.next()) {
             return new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
         }
 
         pool.restoreConnection(con);
-      return null;
+        return null;
     }
 }

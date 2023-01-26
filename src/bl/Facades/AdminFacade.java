@@ -7,12 +7,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 
 import Exception.CompanyExistsException;
 import JavaBeans.Customer;
-import bl.ClientFacade;
+import bl.login.ClientFacade;
 import db.ConnectionPool;
 
 public class AdminFacade extends ClientFacade {

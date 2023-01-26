@@ -1,4 +1,4 @@
-package bl;
+package bl.login;
 
 import bl.Facades.AdminFacade;
 import bl.Facades.CompanyFacade;

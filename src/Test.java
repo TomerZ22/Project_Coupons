@@ -1,7 +1,7 @@
 import JavaBeans.Company;
 import JavaBeans.Customer;
 import bl.Facades.AdminFacade;
-import bl.LoginManager;
+import bl.login.LoginManager;
 import dao.CompaniesDaoImp;
 import dao.CustomersDaoImp;
 import enums.ClientType;
@@ -19,8 +19,8 @@ public class Test {
 
 
 
-        LoginManager loginManager = LoginManager.getInstance();
-        AdminFacade admin = (AdminFacade) loginManager.Login("admin@admin.com", "admin", ClientType.Administrator);
+        AdminFacade admin = (AdminFacade) LoginManager.getInstance().Login("admin@admin.com", "admin", ClientType.Administrator);
+//        AdminFacade admin = (AdminFacade) loginManager.Login("admin@admin.com", "admin", ClientType.Administrator);
         ArrayList<Company> companies = (ArrayList<Company>) admin.getAllCompanies();
         System.out.println(companies);
 

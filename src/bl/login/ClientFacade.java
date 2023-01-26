@@ -1,4 +1,4 @@
-package bl;
+package bl.login;
 
 import dao.*;
 import dao.daoInterfaces.CompaniesDao;
