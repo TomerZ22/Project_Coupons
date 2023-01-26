@@ -25,10 +25,13 @@ public class ConnectionPool {
 
     // return the ONLY instance of ConnectionPool
     public static ConnectionPool getInstance() {
+        //Double-checked locking
         if (instance == null) {
-            instance = new ConnectionPool();
+            synchronized (ConnectionPool.class) {
+                if (instance == null)
+                    instance = new ConnectionPool();
+            }
         }
-
         return instance;
     }
 
