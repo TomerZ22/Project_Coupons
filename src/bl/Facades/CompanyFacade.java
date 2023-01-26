@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import JavaBeans.Customer;
 
 public class CompanyFacade extends ClientFacade
 {
@@ -50,7 +51,14 @@ public class CompanyFacade extends ClientFacade
         pool.restoreConnection(con);
     }
     public void deleteCoupons(Coupon coupon) throws SQLException {
-        couponDao.deleteCoupon(coupon.getId());
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection con = pool.getConnection();
+        PreparedStatement ps = con.prepareStatement("Select * FROM companies WHERE id = " + companyID);
+        if (companyDao.isCompanyExists(getCompanyDetails().getEmail(), getCompanyDetails().getPassword()))
+            couponDao.deleteCoupon(coupon.getId());
+        companyDao.deleteCustomerPurchaseHistory(companyID);
+        ps.execute();
+        pool.restoreConnection(con);
     }
 
     public List<Coupon> getCompanyCoupons () throws SQLException
@@ -59,7 +67,10 @@ public class CompanyFacade extends ClientFacade
     }
     public List<Coupon> getCompanyCoupons (Category category) throws SQLException
     {
-        if (category==null)
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection con = pool.getConnection();
+        PreparedStatement ps = con.prepareStatement("Select * FROM companies WHERE id = " + companyID );
+        if (category!=null)
         {
             return getCompanyCoupons();
         }
