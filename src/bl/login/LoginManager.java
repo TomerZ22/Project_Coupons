@@ -3,13 +3,13 @@ package bl.login;
 import bl.Facades.AdminFacade;
 import bl.Facades.ClientFacade;
 import bl.Facades.CompanyFacade;
-import bl.Facades.CustomerFacade;
 import enums.ClientType;
 
 public class LoginManager {
     private static LoginManager instance;
 
-    private LoginManager() {}
+    private LoginManager() {
+    }
 
     public static LoginManager getInstance() {
         if (instance == null) {
@@ -33,14 +33,15 @@ public class LoginManager {
 //        }
 
         //Customer
-        CustomerFacade customer = new CustomerFacade();
-//        if(clientType == ClientType.Customer && customer.isCustomerExists(email, password)){
-//            return customer;
+//        CustomerFacade customer = new CustomerFacade();
+//        if(clientType == ClientType.Customer && new CustomerExistsException(email, password)){
+////            return customer;
 //        }
-
+//
         return null;//If wrong input
-    }
+//    }
 
+    }
 }
 
 
