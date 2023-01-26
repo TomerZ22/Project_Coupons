@@ -5,12 +5,12 @@ import JavaBeans.Coupon;
 import bl.login.ClientFacade;
 import db.ConnectionPool;
 import enums.Category;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import JavaBeans.Customer;
 
 public class CompanyFacade extends ClientFacade
 {
@@ -56,7 +56,7 @@ public class CompanyFacade extends ClientFacade
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection con = pool.getConnection();
         PreparedStatement ps = con.prepareStatement("Select * FROM companies WHERE id = " + companyID);
-        if (companyDao.isCompanyExists(getCompanyDetails().getEmail(), getCompanyDetails().getPassword()))
+//        if (companyDao.isCompanyExists(getCompanyDetails().getEmail(), getCompanyDetails().getPassword()))
             couponDao.deleteCoupon(coupon.getId());
         companyDao.deleteCustomerPurchaseHistory(companyID);
         ps.execute();
