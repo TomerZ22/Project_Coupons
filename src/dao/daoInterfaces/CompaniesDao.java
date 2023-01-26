@@ -11,7 +11,7 @@ public interface CompaniesDao {
     void deleteCompanyCoupons(int id) throws SQLException; // This method is when we delete a company.
     boolean isCompanyExistByName_Email(String name, String email) throws CompanyExistsException, SQLException; //This method is for the AdminFacade check.
 
-    boolean isCompanyExists(String email, String password) throws SQLException;
+    int isCompanyExists(String email, String password) throws SQLException;
     void addCompany(Company company) throws SQLException;
     void updateCompany(Company company) throws SQLException;
     void deleteCompany(int companyId) throws SQLException;

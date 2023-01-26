@@ -1,17 +1,44 @@
 package bl;
 
+import bl.Facades.AdminFacade;
+import bl.Facades.CompanyFacade;
+import bl.Facades.CustomerFacade;
+import enums.ClientType;
+
 public class LoginManager {
-    private LoginManager instance;
+    private static LoginManager instance;
 
-    private LoginManager(){
+    private LoginManager() {}
 
-    }
-
-    public LoginManager getInstance(){
-        if(instance == null){
+    public static LoginManager getInstance() {
+        if (instance == null) {
             instance = new LoginManager();
         }
         return instance;
     }
 
+    public ClientFacade Login(String email, String password, ClientType clientType) {
+        //Administrator
+        AdminFacade admin = new AdminFacade();
+        if (clientType == ClientType.Administrator && admin.login(email, password)) {
+//            System.out.println("Logged in");
+            return admin;
+        }
+        //Company
+        CompanyFacade company = new CompanyFacade();
+//        if(clientType == ClientType.Company && company.isCompanyExists(email, password)){
+//            return company;
+//        }
+
+        //Customer
+        CustomerFacade customer = new CustomerFacade();
+//        if(clientType == ClientType.Customer && customer.isCustomerExists(email, password)){
+//            return customer;
+//        }
+
+        return null;//If wrong input
+    }
+
 }
+
+
