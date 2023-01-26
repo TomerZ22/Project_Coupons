@@ -1,5 +1,7 @@
 package bl;
 
+import enums.ClientType;
+
 public class LoginManager {
     private LoginManager instance;
 
@@ -12,6 +14,11 @@ public class LoginManager {
             instance = new LoginManager();
         }
         return instance;
+    }
+
+    public ClientFacade Login(String email, String password, ClientType clientType){
+
+        return null;//If wrong
     }
 
 }

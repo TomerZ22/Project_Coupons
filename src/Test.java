@@ -1,6 +1,5 @@
 import JavaBeans.Company;
 import bl.Facades.AdminFacade;
-import Exception.CompanyExistsException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,14 +19,17 @@ public class Test {
 //        customersDaoImp.updateCustomers(customer1);
 
         AdminFacade admin = new AdminFacade();
-        Company amazon = new Company("Amazon", "mynameisJeff@jeff.com", "1234");
-        try {
-            admin.addCompany(amazon);
-        } catch (CompanyExistsException | SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        admin.deleteCompany(amazon);
+//        Company amazon = new Company("Amazon", "mynameisJeff@jeff.com", "1234");
+//        try {
+//            admin.addCompany(amazon);
+//        } catch (CompanyExistsException | SQLException e) {
+//            System.out.println(e.getMessage());
+//        }
+//        admin.deleteCompany(amazon);
         ArrayList<Company> companies = (ArrayList<Company>) admin.getAllCompanies();
+        for(Company company : companies){
+            admin.deleteCompany(company);
+        }
 //        System.out.println(companies == null ? "Empty" : companies);
 
 
