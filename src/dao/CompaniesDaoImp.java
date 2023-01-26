@@ -2,6 +2,7 @@ package dao;
 
 import JavaBeans.Company;
 import JavaBeans.Customer;
+import dao.daoInterfaces.CompaniesDao;
 import db.ConnectionPool;
 import Exception.CompanyExistsException;
 
@@ -25,7 +26,7 @@ public class CompaniesDaoImp implements CompaniesDao {
      */
     public void deleteCustomerPurchaseHistory(int id) throws SQLException {
         Connection conn = pool.getConnection();
-        PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons_vs_customers WHERE coupon_id = " + id);
+        PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons.coupons_vs_customers WHERE coupons_id = " + id);
         ps.execute();
         pool.restoreConnection(conn);
     }
@@ -54,9 +55,11 @@ public class CompaniesDaoImp implements CompaniesDao {
      */
     public boolean isCompanyExistByName_Email(String name, String email) throws CompanyExistsException, SQLException {
         ArrayList<Company> companies = (ArrayList<Company>) getAllCompanies();
-        for (Company company : companies) {
-            if (company.getName().equals(name) || company.getEmail().equals(email))
-                throw new CompanyExistsException("Sorry the Name or Email already exists, try different");
+        if(companies.size() > 0) {
+            for (Company company : companies) {
+                if (company.getName().equals(name) || company.getEmail().equals(email))
+                    throw new CompanyExistsException("Sorry the Name or Email already exists, try different");
+            }
         }
         return false;
     }
@@ -170,13 +173,13 @@ public class CompaniesDaoImp implements CompaniesDao {
         Connection con = pool.getConnection();
         PreparedStatement query = con.prepareStatement("SELECT * FROM companies");
         ResultSet rs = query.executeQuery();
-        while (rs.next()) {
-            companies.add(new Company(rs.getInt(1), rs.getString(2),
-                    rs.getString(3), rs.getString(4)));
-        }
+            while (rs.next()) {
+                companies.add(new Company(rs.getInt(1), rs.getString(2),
+                        rs.getString(3), rs.getString(4)));
+            }
         if (companies.size() == 0)
             return null;
-        System.out.println("Operation Was Successful");
+//        System.out.println("Operation Was Successful");
         pool.restoreConnection(con);
         return companies;
     }
