@@ -16,9 +16,10 @@ public class CompanyFacade extends ClientFacade
 {
 
 
-//    public CompanyFacade(int companyID) {
-//        this.companyID = companyID;
-//    }
+    public CompanyFacade(int companyID) {
+        this.companyID = companyID;
+    }
+    public CompanyFacade() {}
 
     private int companyID;
     @Override
