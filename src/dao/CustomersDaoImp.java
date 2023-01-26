@@ -57,19 +57,18 @@ public class CustomersDaoImp implements CustomersDao {
      * @throws SQLException - if an error occurs during the connection pool initialization to the database.
      */
     @Override
-    public boolean isCustomerExist(String email, String password) throws SQLException {
-        Connection conn = pool.getConnection();
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM customers");
+    public int isCustomerExist(String email, String password) throws SQLException {
+        Connection con = pool.getConnection();
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM customers where email=? and password=?");
+        ps.setString(1,email);
+        ps.setString(2,password);
         ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            if (rs.getString(4).equals(email) && rs.getString(5).equals(password)) {
-                pool.restoreConnection(conn);
-                return true;
+        int id=-1;
+            if (rs.next()) {
+                id = rs.getInt(1);
             }
-        }
-
-        return false;
+            pool.restoreConnection(con);
+                return id;
     }
 
     /**
