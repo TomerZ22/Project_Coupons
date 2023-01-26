@@ -25,6 +25,7 @@ public class LoginManager {
 //            System.out.println("Logged in");
             return admin;
         }
+
         //Company
         CompanyFacade company = new CompanyFacade();
 //        if(clientType == ClientType.Company && company.isCompanyExists(email, password)){

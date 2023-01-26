@@ -1,17 +1,16 @@
 package bl.Facades;
 
+import Exception.CompanyExistsException;
 import Exception.CustomerExistsException;
 import JavaBeans.Company;
+import JavaBeans.Customer;
+import db.ConnectionPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import Exception.CompanyExistsException;
-import JavaBeans.Customer;
-import db.ConnectionPool;
 
 public class AdminFacade extends ClientFacade {
     @Override
@@ -26,6 +25,7 @@ public class AdminFacade extends ClientFacade {
 
     }
 
+    //Fix this method the connection should be in the DAO!
     public void updateCompany(Company company) throws SQLException, CompanyExistsException {
         //Cant update company ID - we don't have the SETTER for id so not need to check.
         //Cant update company name - Check with the id if the name is still the same at the database

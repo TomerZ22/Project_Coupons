@@ -1,13 +1,9 @@
 import JavaBeans.Company;
 import JavaBeans.Customer;
-import bl.Facades.AdminFacade;
-import bl.LoginManager;
 import dao.CompaniesDaoImp;
 import dao.CustomersDaoImp;
-import enums.ClientType;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class Test {
     public static void main(String[] args) throws SQLException{
@@ -19,10 +15,10 @@ public class Test {
 
 
 
-        LoginManager loginManager = LoginManager.getInstance();
-        AdminFacade admin = (AdminFacade) loginManager.Login("admin@admin.com", "admin", ClientType.Administrator);
-        ArrayList<Company> companies = (ArrayList<Company>) admin.getAllCompanies();
-        System.out.println(companies);
+//        LoginManager loginManager = LoginManager.getInstance();
+//        AdminFacade admin = (AdminFacade) loginManager.Login("admin@admin.com", "admin", ClientType.Administrator);
+//        ArrayList<Company> companies = (ArrayList<Company>) admin.getAllCompanies();
+//        System.out.println(companies);
 
 //
 

@@ -76,7 +76,7 @@ public class CompanyFacade extends ClientFacade
             return getCompanyCoupons();
         }
         else
-        return null;
+         return null;
     }
     public List<Coupon> getCompanyCoupons (double maxPrice) throws SQLException
     {
