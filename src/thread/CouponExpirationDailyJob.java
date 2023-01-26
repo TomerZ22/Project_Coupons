@@ -5,7 +5,6 @@ import dao.CouponsDaoImp;
 import dao.daoInterfaces.CouponsDao;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -21,12 +20,13 @@ public class CouponExpirationDailyJob implements Runnable {
     @Override
     public void run() {
         while (!quit) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-            Date date = new Date();
+            long dateMillis = System.currentTimeMillis();
+            Date date = new Date(dateMillis);
+
             try {
                 ArrayList<Coupon> coupons = (ArrayList<Coupon>) couponsDao.getAllCoupons();
                 for (Coupon coupon : coupons) {
-                    if (date == coupon.getEndDate()) {
+                    if (coupon.getEndDate().before(date)) {
                         couponsDao.deleteCouponPurchaseHistory(coupon.getId());
                         couponsDao.deleteCoupon(coupon.getId());
                     }
