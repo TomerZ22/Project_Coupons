@@ -41,6 +41,7 @@ public class CompaniesDaoImp implements CompaniesDao {
         Connection conn = pool.getConnection();
         PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons.coupons WHERE company_id= " + id);
         ps.execute();
+        System.out.println("Coupons deleted successfully");
         pool.restoreConnection(conn);
     }
 
