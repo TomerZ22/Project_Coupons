@@ -73,16 +73,16 @@ public class CompaniesDaoImp implements CompaniesDao {
      * @throws SQLException
      */
     @Override
-    public boolean isCompanyExists(String email, String password) throws SQLException {
+    public int isCompanyExists(String email, String password) throws SQLException {
         Connection con = pool.getConnection();
-        PreparedStatement preparedStatement = con.prepareStatement("select * from companies");
+        PreparedStatement preparedStatement = con.prepareStatement("select * from companies where email = ? and password = ?");
+        preparedStatement.setString(1, email);
+        preparedStatement.setString(2, password);
         ResultSet rs = preparedStatement.executeQuery();
-        while (rs.next())
-            if (Objects.equals(rs.getString(3), email) && Objects.equals(rs.getString(4), password)) {
-                System.out.println("Company Exist");
-                pool.restoreConnection(con);
-            }
-        return false;
+        int id = -1;
+        if(rs.next())
+            id = rs.getInt(1);
+        return id;
     }
 
 

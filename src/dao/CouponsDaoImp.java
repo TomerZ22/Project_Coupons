@@ -82,20 +82,23 @@ public class CouponsDaoImp implements CouponsDao {
      * @return </list> of all coupons
      * @throws SQLException
      */
-    @Override
+   @Override
     public List<Coupon> getAllCoupons() throws SQLException {
-        List<Coupon> coupons = new ArrayList<>();
         Connection con = pool.getConnection();
-        PreparedStatement statement = con.prepareStatement("select * from coupons");
-        ResultSet rs = statement.executeQuery();
-        while (rs.next()) {
-            coupons.add(new Coupon(rs.getInt(1), rs.getInt(2), Category.values()[rs.getInt(3)],
-                    rs.getString(4), rs.getString(5), rs.getDate(6),
-                    rs.getDate(7), rs.getInt(8), rs.getDouble(8),
-                    rs.getString(9)));
+        try{
+            List<Coupon> coupons = new ArrayList<>();
+            PreparedStatement statement = con.prepareStatement("select * from coupons");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                coupons.add(new Coupon(rs.getInt(1), rs.getInt(2), Category.values()[rs.getInt(3)],
+                        rs.getString(4), rs.getString(5), rs.getDate(6),
+                        rs.getDate(7), rs.getInt(8), rs.getDouble(8),
+                        rs.getString(9)));
+            }
+            return coupons;
+        }finally{
+            pool.restoreConnection(con);
         }
-        pool.restoreConnection(con);
-        return coupons;
     }
 
     /**
