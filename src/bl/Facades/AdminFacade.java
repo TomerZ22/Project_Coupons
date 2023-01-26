@@ -23,7 +23,7 @@ public class AdminFacade extends ClientFacade {
 
     public void addCompany(Company company) throws CompanyExistsException, SQLException {
         //Check if company.name and company.email do not exist!
-        if (!companyDao.isCompanyExistByName_Email(company.getName(), company.getEmail()))
+        if (companyDao.getAllCompanies() == null || !companyDao.isCompanyExistByName_Email(company.getName(), company.getEmail()))
             companyDao.addCompany(company);
 
     }
@@ -49,6 +49,7 @@ public class AdminFacade extends ClientFacade {
     /**
      * This method is called to delete a company, its coupons, and its customers
      * purchases history from the database.
+     *
      * @param company - The company to delete.
      * @throws SQLException - If an error occurs during connection to the database.
      */
@@ -60,6 +61,7 @@ public class AdminFacade extends ClientFacade {
 
     /**
      * This method returns in a List, all the companies that are in the DB table.
+     *
      * @return - An List of companies.
      * @throws SQLException - If an error occurs during the operation with the DB.
      */
@@ -78,6 +80,7 @@ public class AdminFacade extends ClientFacade {
 
     /**
      * This method updates the customer, but you CANNOT update the customer ID!.
+     *
      * @param customer - The customer to update.
      * @throws SQLException - If something goes wrong during the connection to the DB.
      */
@@ -88,6 +91,7 @@ public class AdminFacade extends ClientFacade {
 
     /**
      * The method deletes the customer coupons and then customer itself from the database.
+     *
      * @param customerID - Customer ID to be deleted.
      * @throws SQLException - If there was an error deleting the customer or connecting to the DB.
      */
@@ -102,10 +106,11 @@ public class AdminFacade extends ClientFacade {
 
     /**
      * The method returns a Customer from the database by its ID.
+     *
      * @param id - the ID of the Customer.
      * @return - the Customer.
      * @throws SQLException - if an error occurs while retrieving the Customer or
-     *                        connecting to the database is encountered.
+     *                      connecting to the database is encountered.
      */
     public Customer getCustomerByID(int id) throws SQLException {
         return customerDao.getOneCustomer(id);
