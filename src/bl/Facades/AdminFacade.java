@@ -11,7 +11,6 @@ import java.util.List;
 
 import Exception.CompanyExistsException;
 import JavaBeans.Customer;
-import bl.login.ClientFacade;
 import db.ConnectionPool;
 
 public class AdminFacade extends ClientFacade {

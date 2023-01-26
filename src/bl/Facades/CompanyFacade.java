@@ -2,7 +2,6 @@ package bl.Facades;
 
 import JavaBeans.Company;
 import JavaBeans.Coupon;
-import bl.login.ClientFacade;
 import db.ConnectionPool;
 import enums.Category;
 
