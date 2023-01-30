@@ -1,14 +1,10 @@
 package bl;
 
-import Exceptions.CouponTitleExistsException;
+import Exception.CouponTitleExistsException;
 import JavaBeans.Category;
 import JavaBeans.Company;
 import JavaBeans.Coupon;
-import db.ConnectionPool;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import bl.Facades.ClientFacade;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
