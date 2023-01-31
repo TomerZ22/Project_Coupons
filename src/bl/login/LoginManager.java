@@ -1,8 +1,8 @@
 package bl.login;
 
+import bl.CompanyFacade;
 import bl.Facades.AdminFacade;
 import bl.Facades.ClientFacade;
-import bl.Facades.CompanyFacade;
 import enums.ClientType;
 
 public class LoginManager {

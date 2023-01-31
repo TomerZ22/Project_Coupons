@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class AdminFacade extends ClientFacade {
+
     @Override
     public boolean login(String email, String password) {
         return email.equals("admin@admin.com") && password.equals("admin");
@@ -72,8 +73,8 @@ public class AdminFacade extends ClientFacade {
     }
 
     public void addNewCustomer(Customer customer) throws CustomerExistsException, SQLException {
-        if (!customerDao.isCustomerEmailExists(customer))
-            customerDao.addCustomer(customer);
+        if (!customersDao.isCustomerEmailExists(customer))
+            customersDao.addCustomer(customer);
     }
 
     /**
@@ -84,7 +85,7 @@ public class AdminFacade extends ClientFacade {
      */
     public void updateCustomer(Customer customer) throws SQLException {
         //Cant update customer ID
-        customerDao.updateCustomers(customer);
+        customersDao.updateCustomers(customer);
     }
 
     /**
@@ -94,12 +95,12 @@ public class AdminFacade extends ClientFacade {
      * @throws SQLException - If there was an error deleting the customer or connecting to the DB.
      */
     public void deleteCustomer(int customerID) throws SQLException {
-        customerDao.deleteCustomersCoupons(customerID);
-        customerDao.deleteCustomer(customerID);
+        customersDao.deleteCustomersCoupons(customerID);
+        customersDao.deleteCustomer(customerID);
     }
 
     public List<Customer> getAllCustomers() throws SQLException {
-        return customerDao.getAllCustomers();
+        return customersDao.getAllCustomers();
     }
 
     /**
@@ -111,7 +112,7 @@ public class AdminFacade extends ClientFacade {
      *                      connecting to the database is encountered.
      */
     public Customer getCustomerByID(int id) throws SQLException {
-        return customerDao.getOneCustomer(id);
+        return customersDao.getOneCustomer(id);
     }
 
 }
