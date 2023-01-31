@@ -20,13 +20,14 @@ public class CouponsDaoImp implements CouponsDao {
      * @param couponId - The id of the coupon that expired.
      */
     public void deleteCouponPurchaseHistory(int couponId) throws SQLException {
-        Connection conn = pool.getConnection();
-        PreparedStatement statement = conn.prepareStatement("DELETE FROM coupons.coupons_vs_customers where coupons_id =" + couponId);
-        statement.execute();
-        pool.restoreConnection(conn);
+        Connection con = pool.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement("DELETE FROM coupons.coupons_vs_customers where coupons_id =" + couponId);
+            statement.execute(); 
+        }finally {
+            pool.restoreConnection(con);
+        }
     }
-
-
 
     /**
      * This method adds coupon to the db
@@ -38,20 +39,23 @@ public class CouponsDaoImp implements CouponsDao {
     @Override
     public void addCoupon(Coupon coupon) throws SQLException {
         Connection con = pool.getConnection();
-        PreparedStatement statement = con.prepareStatement("insert into coupons (company_id, category_id, title, description, start_date, end_date, amount, price, image)" +
-                "values(?,?,?,?,?,?,?,?,?)");
-        statement.setInt(1, coupon.getCompanyId());
-        statement.setInt(2, coupon.getCategory().ordinal() + 1);
-        statement.setString(3, coupon.getTitle());
-        statement.setString(4, coupon.getDescription());
-        statement.setDate(5, coupon.getStartDate());
-        statement.setDate(6, coupon.getEndDate());
-        statement.setInt(7, coupon.getAmount());
-        statement.setDouble(8, coupon.getPrice());
-        statement.setString(9, " ");
-        statement.execute();
-        System.out.println("coupon added successfully");
-        pool.restoreConnection(con);
+        try {
+            PreparedStatement statement = con.prepareStatement("insert into coupons (company_id, category_id, title, description, start_date, end_date, amount, price, image)" +
+                    "values(?,?,?,?,?,?,?,?,?)");
+            statement.setInt(1, coupon.getCompanyId());
+            statement.setInt(2, coupon.getCategory().ordinal() + 1);
+            statement.setString(3, coupon.getTitle());
+            statement.setString(4, coupon.getDescription());
+            statement.setDate(5, coupon.getStartDate());
+            statement.setDate(6, coupon.getEndDate());
+            statement.setInt(7, coupon.getAmount());
+            statement.setDouble(8, coupon.getPrice());
+            statement.setString(9, " ");
+            statement.execute();
+            System.out.println("coupon added successfully");    
+        }finally {
+            pool.restoreConnection(con);  
+        }
     }
 
     /**
@@ -63,19 +67,22 @@ public class CouponsDaoImp implements CouponsDao {
     @Override
     public void updateCoupon(Coupon coupon) throws SQLException {
         Connection con = pool.getConnection();
-        PreparedStatement statement = con.prepareStatement(
-                "update coupons set title=?, description=?, start_date=?, end_date=?, amount=?, price=?" +
-                        ", image=? where id=" + coupon.getId());
-        statement.setString(1, coupon.getTitle());
-        statement.setString(2, coupon.getDescription());
-        statement.setDate(3, coupon.getStartDate());
-        statement.setDate(4, coupon.getEndDate());
-        statement.setInt(5, coupon.getAmount());
-        statement.setDouble(6, coupon.getPrice());
-        statement.setString(7, coupon.getImage());
-        statement.execute();
-        System.out.println("coupon updated successfully");
-        pool.restoreConnection(con);
+        try {
+            PreparedStatement statement = con.prepareStatement(
+                    "update coupons set title=?, description=?, start_date=?, end_date=?, amount=?, price=?" +
+                            ", image=? where id=" + coupon.getId());
+            statement.setString(1, coupon.getTitle());
+            statement.setString(2, coupon.getDescription());
+            statement.setDate(3, coupon.getStartDate());
+            statement.setDate(4, coupon.getEndDate());
+            statement.setInt(5, coupon.getAmount());
+            statement.setDouble(6, coupon.getPrice());
+            statement.setString(7, coupon.getImage());
+            statement.execute();
+            System.out.println("coupon updated successfully");     
+        }finally {
+            pool.restoreConnection(con);
+        }
     }
 
     /**
@@ -87,10 +94,13 @@ public class CouponsDaoImp implements CouponsDao {
     @Override
     public void deleteCoupon(int couponId) throws SQLException {
         Connection con = pool.getConnection();
-        PreparedStatement statement = con.prepareStatement("delete from coupons where id=" + couponId);
-        statement.execute();
-        System.out.println("coupon deleted successfully");
-        pool.restoreConnection(con);
+        try {
+            PreparedStatement statement = con.prepareStatement("delete from coupons where id=" + couponId);
+            statement.execute();
+            System.out.println("coupon deleted successfully");  
+        }finally {
+            pool.restoreConnection(con);
+        }
     }
 
     /**
@@ -128,17 +138,20 @@ public class CouponsDaoImp implements CouponsDao {
     @Override
     public Coupon getOneCoupon(int couponId) throws SQLException {
         Connection con = pool.getConnection();
-        PreparedStatement statement = con.prepareStatement("select * from coupons where id=" + couponId);
-        ResultSet rs = statement.executeQuery();
-        while (rs.next()) {
-            Coupon coupon = new Coupon(rs.getInt(1), rs.getInt(2),
-                    (Category.values()[rs.getInt(3) - 1]), rs.getString(4), rs.getString(5), rs.getDate(6),
-                    rs.getDate(7), rs.getInt(8), rs.getDouble(8),
-                    rs.getString(9));
-            pool.restoreConnection(con);
-            return coupon;
+        try {
+            PreparedStatement statement = con.prepareStatement("select * from coupons where id=" + couponId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Coupon coupon = new Coupon(rs.getInt(1), rs.getInt(2),
+                        (Category.values()[rs.getInt(3) - 1]), rs.getString(4), rs.getString(5), rs.getDate(6),
+                        rs.getDate(7), rs.getInt(8), rs.getDouble(8),
+                        rs.getString(9));
+                return coupon;
         }
-        return null;
+            return null;
+        }finally {
+            pool.restoreConnection(con);
+        }
     }
 
     /**
@@ -151,12 +164,15 @@ public class CouponsDaoImp implements CouponsDao {
     @Override
     public void addCouponPurchase(int customerID, int couponID) throws SQLException {
         Connection con = pool.getConnection();
-        PreparedStatement statement = con.prepareStatement("insert into coupons_vs_customers values(?,?)");
-        statement.setInt(1, customerID);
-        statement.setInt(2, couponID);
-        statement.execute();
-        System.out.println("coupon purchased successfully");
-        pool.restoreConnection(con);
+        try {
+            PreparedStatement statement = con.prepareStatement("insert into coupons_vs_customers values(?,?)");
+            statement.setInt(1, customerID);
+            statement.setInt(2, couponID);
+            statement.execute();
+            System.out.println("coupon purchased successfully"); 
+        }finally {
+            pool.restoreConnection(con);
+        }
     }
 
     /**
@@ -169,11 +185,13 @@ public class CouponsDaoImp implements CouponsDao {
     @Override
     public void deleteCouponPurchase(int customerID, int couponID) throws SQLException {
         Connection con = pool.getConnection();
-        PreparedStatement statement = con.prepareStatement("delete from coupons_vs_customers where customer_id=" + customerID + " and coupons_id=" + couponID);
-        statement.execute();
-        System.out.println("coupon purchase deleted successfully");
-        pool.restoreConnection(con);
+        try {
+            PreparedStatement statement = con.prepareStatement("delete from coupons_vs_customers where customer_id=" + customerID + " and coupons_id=" + couponID);
+            statement.execute();
+            System.out.println("coupon purchase deleted successfully");  
+        }finally {
+            pool.restoreConnection(con); 
+        }
     }
-
 }
 
