@@ -1,6 +1,6 @@
-package bl;
+package bl.Facades;
 
-import Exception.CouponTitleExistsException;
+import Exceptions.CouponTitleExistsException;
 import JavaBeans.Category;
 import JavaBeans.Company;
 import JavaBeans.Coupon;
@@ -86,7 +86,7 @@ public class CompanyFacade extends ClientFacade
         List<Coupon>getCompanyCouponsByCategory=new ArrayList<>();
         List<Coupon>companyCoupons=getCompanyCoupons();
         for (int i = 0; i < companyCoupons.size(); i++) {
-            if (category==companyCoupons.get(i).getCategory())
+            if (category.name()==companyCoupons.get(i).getCategory().name())
                 getCompanyCouponsByCategory.add(companyCoupons.get(i));
         }
         return getCompanyCouponsByCategory;
