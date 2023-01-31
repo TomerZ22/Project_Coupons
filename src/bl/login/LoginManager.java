@@ -1,15 +1,14 @@
-package bl.login;
+package bl;
 
-import bl.CompanyFacade;
-import bl.Facades.AdminFacade;
-import bl.Facades.ClientFacade;
-import enums.ClientType;
+import Exceptions.LoginErrorException;
+
+import java.sql.SQLException;
 
 public class LoginManager {
+
     private static LoginManager instance;
 
-    private LoginManager() {
-    }
+    private LoginManager() {}
 
     public static LoginManager getInstance() {
         if (instance == null) {
@@ -17,31 +16,32 @@ public class LoginManager {
         }
         return instance;
     }
+    
+    public ClientFacade login(String email, String password, ClientType type) throws LoginErrorException, SQLException {
+        switch (type) {
+                
+            case Administrator:
+                AdminFacade adminFacade = new AdminFacade();
+                if (adminFacade.login(email, password))
+                    return adminFacade;
+                else
+                            throw new LoginErrorException("Your email or password isn't valid");
 
-    public ClientFacade Login(String email, String password, ClientType clientType) {
-        //Administrator
-        AdminFacade admin = new AdminFacade();
-        if (clientType == ClientType.Administrator && admin.login(email, password)) {
-//            System.out.println("Logged in");
-            return admin;
+            case Company:
+                CompanyFacade companyFacade= new CompanyFacade();
+                if (companyFacade.login(email,password))
+                    return companyFacade;
+                else throw new LoginErrorException("Your email or password isn't valid");
+
+            case Customer:
+                bl.Facades.CustomerFacade customerFacade= new bl.Facades.CustomerFacade();
+                if (customerFacade.login(email,password))
+                    return customerFacade;
+                else
+                    throw new LoginErrorException("Your email or password isn't valid");
+
         }
-
-        //Company
-        CompanyFacade company = new CompanyFacade();
-//        if(clientType == ClientType.Company && company.isCompanyExists(email, password)){
-//            return company;
-//        }
-
-        //Customer
-//        CustomerFacade customer = new CustomerFacade();
-//        if(clientType == ClientType.Customer && new CustomerExistsException(email, password)){
-////            return customer;
-//        }
-//
-        return null;//If wrong input
-//    }
-
+        return null;
     }
 }
-
 
