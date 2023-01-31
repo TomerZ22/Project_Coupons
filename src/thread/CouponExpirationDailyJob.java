@@ -11,6 +11,7 @@ import java.util.Date;
 public class CouponExpirationDailyJob implements Runnable {
     private CouponsDao couponsDao;
 
+
     private boolean quit;
 
     public CouponExpirationDailyJob() {

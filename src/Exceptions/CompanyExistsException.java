@@ -1,4 +1,4 @@
-package Exception;
+package Exceptions;
 
 public class CompanyExistsException extends Exception {
     public CompanyExistsException(String message) {

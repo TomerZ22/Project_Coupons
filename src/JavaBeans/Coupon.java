@@ -122,8 +122,8 @@ public class Coupon {
                 ", Category: " + category +
                 ", Title: " + title+
                 ", Description: " + description+
-                ", Start Date: " + startDate +
-                ", End Date: " + endDate +
+                ", Start Date: " + startDate.toString() +
+                ", End Date: " + endDate.toString() +
                 ", Amount: " + amount +
                 ", Price: " + price +
                 ", Image: " + image;

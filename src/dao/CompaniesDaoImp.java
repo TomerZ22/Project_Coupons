@@ -1,19 +1,22 @@
 package dao;
 
 import JavaBeans.Company;
+import dao.daoInterfaces.CompaniesDao;
 import db.ConnectionPool;
 import Exceptions.CompanyExistsException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class CompaniesDaoImp implements CompaniesDao {
     private ConnectionPool pool = ConnectionPool.getInstance();
+
+
     /**
      * This method is called only when we delete a company, hence we delete all the history of customers purchase.
      *
@@ -21,12 +24,12 @@ public class CompaniesDaoImp implements CompaniesDao {
      * @throws SQLException - If failed to connect or detect in the SQL.
      */
     public void deleteCustomerPurchaseHistory(int id) throws SQLException {
-        Connection conn = pool.getConnection();
+        Connection con = pool.getConnection();
         try {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons_vs_customers WHERE coupon_id = " + id);
+            PreparedStatement ps = con.prepareStatement("DELETE FROM coupons_vs_customers WHERE coupon_id = " + id);
             ps.execute();
         }finally {
-            pool.restoreConnection(conn);
+            pool.restoreConnection(con);
         }
     }
 
@@ -37,17 +40,14 @@ public class CompaniesDaoImp implements CompaniesDao {
      * @throws SQLException - If failed to connect or detect in the SQL.
      */
     public void deleteCompanyCoupons(int id) throws SQLException {
-        Connection conn = pool.getConnection();
+        Connection con = pool.getConnection();
         try {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons.coupons WHERE company_id= " + id);
+            PreparedStatement ps = con.prepareStatement("DELETE FROM coupons.coupons WHERE company_id= " + id);
             ps.execute();
-            System.out.println("Coupons deleted successfully");
-        }
-        finally {
-            pool.restoreConnection(conn);
+        }finally {
+            pool.restoreConnection(con);
         }
     }
-
     /**
      * This method is to check for company existence in order to add company from the BL AdminFacade
      *
@@ -75,18 +75,22 @@ public class CompaniesDaoImp implements CompaniesDao {
      */
     @Override
     public int isCompanyExists(String email, String password) throws SQLException {
-        Connection con = pool.getConnection();
-        PreparedStatement preparedStatement = con.prepareStatement("select * from companies where email = ? and password = ?");
-        preparedStatement.setString(1, email);
-        preparedStatement.setString(2, password);
-        ResultSet rs = preparedStatement.executeQuery();
-        int id = -1;
-        if(rs.next())
-            id = rs.getInt(1);
-        return id;
+        Connection con = pool.getConnection();;
+        try {
+            PreparedStatement preparedStatement = con.prepareStatement("select * from companies");
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                if (Objects.equals(rs.getString(3), email) && Objects.equals(rs.getString(4), password)) {
+                    preparedStatement.execute();
+                    System.out.println("Company Exist");
+                    return 1;
+                }
+            }
+            return -1;
+        } finally {
+            pool.restoreConnection(con);
+        }
     }
-
-
     /**
      * This Method Adds a new Company To The Data Base
      *
@@ -103,13 +107,10 @@ public class CompaniesDaoImp implements CompaniesDao {
             preparedStatement.setString(3, company.getPassword());
             preparedStatement.execute();
             System.out.println("Company was Successfully Added");
-        }
-        finally {
+        }finally {
             pool.restoreConnection(con);
         }
     }
-
-
     /**
      * This Method Update The Company in the Data Base
      *
@@ -125,13 +126,10 @@ public class CompaniesDaoImp implements CompaniesDao {
             ps.setString(2, company.getEmail());
             ps.setString(3, company.getPassword());
             ps.execute();
-            System.out.println("Company updated successfully");
-        }
-         finally {
+        }finally {
             pool.restoreConnection(con);
         }
     }
-
     /**
      * This Method Deletes Company By ID
      * @param companyId
@@ -144,9 +142,8 @@ public class CompaniesDaoImp implements CompaniesDao {
             PreparedStatement preparedStatement = con.prepareStatement(" DELETE FROM companies WHERE id =?");
             preparedStatement.setInt(1, companyId);
             preparedStatement.execute();
-            System.out.println("Company was Successfully Deleted"); 
-        }
-         finally {
+            System.out.println("Company was Successfully Deleted");
+        }finally {
             pool.restoreConnection(con);
         }
     }
@@ -166,14 +163,11 @@ public class CompaniesDaoImp implements CompaniesDao {
             if (rs.next()) {
                 return new Company(rs.getInt(1), rs.getString(2),
                         rs.getString(3), rs.getString(4));
-
             }
-            System.out.println("Operation Was Successful");
-        }
-        finally {
+            return null;
+        }finally {
             pool.restoreConnection(con);
         }
-        return null;
     }
 
     /**
@@ -186,19 +180,18 @@ public class CompaniesDaoImp implements CompaniesDao {
         ArrayList<Company> companies = new ArrayList<>();
         Connection con = pool.getConnection();
         try {
-            PreparedStatement query = con.prepareStatement("SELECT * FROM companies");
+            PreparedStatement query = con.prepareStatement("SELECT * FROM customers");
             ResultSet rs = query.executeQuery();
             while (rs.next()) {
                 companies.add(new Company(rs.getInt(1), rs.getString(2),
                         rs.getString(3), rs.getString(4)));
             }
-            if (companies.size() == 0)
+            if (companies.size() == 0) {
                 return null;
-            System.out.println("Operation Was Successful");
-        }
-        finally {
+            }
+            return companies;
+        }finally {
             pool.restoreConnection(con);
         }
-        return companies;
     }
 }

@@ -1,7 +1,8 @@
 package dao.daoInterfaces;
 
+import Exceptions.CustomerExistsException;
 import JavaBeans.Customer;
-import Exception.CustomerExistsException;
+import Exceptions.CustomerExistsException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 

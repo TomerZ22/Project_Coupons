@@ -1,7 +1,9 @@
 package bl.Facades;
 
-import Exception.CompanyExistsException;
-import Exception.CustomerExistsException;
+import Exceptions.CompanyExistsException;
+import Exceptions.CustomerExistsException;
+import Exceptions.CompanyExistsException;
+import Exceptions.CustomerExistsException;
 import JavaBeans.Company;
 import JavaBeans.Customer;
 import db.ConnectionPool;
@@ -19,7 +21,7 @@ public class AdminFacade extends ClientFacade {
         return email.equals("admin@admin.com") && password.equals("admin");
     }
 
-    public void addCompany(Company company) throws CompanyExistsException, SQLException {
+    public void addCompany(Company company) throws CompanyExistsException, SQLException, CompanyExistsException {
         //Check if company.name and company.email do not exist!
         if (companyDao.getAllCompanies() == null || !companyDao.isCompanyExistByName_Email(company.getName(), company.getEmail()))
             companyDao.addCompany(company);

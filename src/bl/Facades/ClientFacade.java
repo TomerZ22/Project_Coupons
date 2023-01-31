@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public abstract class ClientFacade {
     protected CompaniesDao companyDao = new CompaniesDaoImp();
-    protected CustomersDao customersDao= new CustomersDaoImp();
+    protected CustomersDao customersDao= new CustomerDaoImp();
     protected CouponsDao couponDao = new CouponsDaoImp();
 
     public abstract boolean login(String email, String password) throws SQLException;

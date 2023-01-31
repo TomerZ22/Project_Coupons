@@ -1,7 +1,8 @@
 package dao.daoInterfaces;
 
+import Exceptions.CompanyExistsException;
 import JavaBeans.Company;
-import Exception.CompanyExistsException;
+import Exceptions.CompanyExistsException;
 import java.sql.SQLException;
 import java.util.List;
 
