@@ -3,28 +3,28 @@ package dao;
 import JavaBeans.Customer;
 import dao.daoInterfaces.CustomersDao;
 import db.ConnectionPool;
-import Exception.CustomerExistsException;
-
+import Exceptions.CustomerExistsException;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class CustomersDaoImp implements CustomersDao {
+public class CustomerDaoImp implements CustomersDao {
     private ConnectionPool pool = ConnectionPool.getInstance();
-
+    
     /**
      * This method is called in the AdminFacade, in order to delete all coupons of a specific customer.
      *
      * @param customerId - the customer identifier to delete.
-     * @throws SQLException - If the connection fails or didn't find the DB table.
+     * @throws SQLException - If the connection fails or didn't found the DB table.
      */
     public void deleteCustomersCoupons(int customerId) throws SQLException {
-        Connection conn = pool.getConnection();
-        PreparedStatement ps = conn.prepareStatement("DELETE FROM coupons_vs_customers WHERE custumers_id=" + customerId);
-        ps.execute();
-        pool.restoreConnection(conn);
+        Connection con = pool.getConnection();
+        try {
+            PreparedStatement ps = con.prepareStatement("DELETE FROM coupons_vs_customers WHERE custumers_id=" + customerId);
+            ps.execute(); 
+        }finally {
+            pool.restoreConnection(con);
+        }
     }
-
-
     /**
      * This method is to check if the customer email is already exist in the database.
      *
@@ -34,20 +34,21 @@ public class CustomersDaoImp implements CustomersDao {
      * @throws SQLException            - If the connection fails or didn't found the DB table.
      */
     public boolean isCustomerEmailExists(Customer customer) throws CustomerExistsException, SQLException {
-        Connection conn = pool.getConnection();
-        PreparedStatement ps = conn.prepareStatement("SELECT email FROM customers");
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            if (rs.getString(4).equals(customer.getEmail())) {
-                pool.restoreConnection(conn);
-                throw new CustomerExistsException("Customer already exists");
+        Connection con = pool.getConnection();
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT email FROM customers");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                if (rs.getString(4).equals(customer.getEmail())) {
+                    pool.restoreConnection(con);
+                    throw new CustomerExistsException("Customer already exists");
+                }
             }
+            return false;
+        }finally {
+            pool.restoreConnection(con);
         }
-        pool.restoreConnection(conn);
-        return false;
     }
-
-
     /**
      * This method returns a boolean if the email address and password are the same in the database.
      *
@@ -59,16 +60,18 @@ public class CustomersDaoImp implements CustomersDao {
     @Override
     public int isCustomerExist(String email, String password) throws SQLException {
         Connection con = pool.getConnection();
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM customers where email=? and password=?");
-        ps.setString(1, email);
-        ps.setString(2, password);
-        ResultSet rs = ps.executeQuery();
-        int id = -1;
-        if (rs.next()) {
-            id = rs.getInt(1);
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM customers");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                if (rs.getString(4).equals(email) && rs.getString(5).equals(password)) {
+                    return 1;
+                }
+            }
+            return -1;
+        } finally {
+            pool.restoreConnection(con);
         }
-        pool.restoreConnection(con);
-        return id;
     }
 
     /**
@@ -87,35 +90,38 @@ public class CustomersDaoImp implements CustomersDao {
     }
 
     /**
-     * This method Adds a new customer to the database and returns it ID.
+     * This method Adds a new customer to the database.
      *
      * @param customer - the customer to add to the database.
      * @throws SQLException - throws an exception if there were error during the connection to SQL
      */
     @Override
     public void addCustomer(Customer customer) throws SQLException {
-        Connection conn = pool.getConnection();
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO customers(first_name, last_name, email, password) "
-                + "values(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-        //DRY
-        prepareStatement(ps, customer);
-        ResultSet rs = ps.getGeneratedKeys();
-        if (rs.next()) {
-            customer.setId(rs.getInt(1));
+        Connection con = pool.getConnection();
+        try {
+            PreparedStatement ps = con.prepareStatement("INSERT INTO customers(first_name, last_name, email, password) "
+                    + "values(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            //DRY
+            prepareStatement(ps, customer);
+            ResultSet rs = ps.getGeneratedKeys();
+            int id = 0;
+            while (rs.next()) {
+                id = rs.getInt(1);
+            }
+            customer.setId(id);
+        }finally {
+            pool.restoreConnection(con);
         }
-
-        pool.restoreConnection(conn);
     }
-
-
     @Override
     public void updateCustomers(Customer customer) throws SQLException {
-        Connection conn = pool.getConnection();
-        PreparedStatement update = conn.prepareStatement("UPDATE customers SET first_name= ?, last_name= ?, email= ?, password= ?" +
-                " WHERE id= " + customer.getId());
-        prepareStatement(update, customer);
-
-        pool.restoreConnection(conn);
+        Connection con = pool.getConnection();
+        try {
+            PreparedStatement update = con.prepareStatement("UPDATE customers SET first_name= ?, last_name= ?, email= ?, password= ? WHERE id= " + customer.getId());
+            prepareStatement(update, customer);
+        }finally {
+            pool.restoreConnection(con);
+        }
     }
 
     /**
@@ -126,11 +132,13 @@ public class CustomersDaoImp implements CustomersDao {
      */
     @Override
     public void deleteCustomer(int customerId) throws SQLException {
-        Connection conn = pool.getConnection();
-        PreparedStatement delete = conn.prepareStatement("DELETE FROM customers WHERE id= " + customerId);
-        delete.execute();
-        pool.restoreConnection(conn);
-
+        Connection con = pool.getConnection();
+        try {
+            PreparedStatement delete = con.prepareStatement("DELETE FROM customers WHERE id= " + customerId);
+            delete.execute();
+        }finally {
+            pool.restoreConnection(con);
+        }
     }
 
     /**
@@ -140,22 +148,24 @@ public class CustomersDaoImp implements CustomersDao {
      * @throws SQLException - throws an exception if there was an error during the connection to the SQL.
      */
     @Override
-    public ArrayList<Customer> getAllCustomers() throws SQLException {
-        ArrayList<Customer> costumers = new ArrayList<>();
-
-        Connection conn = pool.getConnection();
-        PreparedStatement query = conn.prepareStatement("SELECT * FROM customers");
-        ResultSet rs = query.executeQuery();
-        while (rs.next()) {
-            costumers.add(new Customer(rs.getInt(1), rs.getString(2),
-                    rs.getString(3), rs.getString(4), rs.getString(5)));
-        }
-        if (costumers.size() == 0)
-            return null;
-
-        pool.restoreConnection(conn);
-        return costumers;
-    }
+   public ArrayList<Customer> getAllCustomers() throws SQLException {
+       ArrayList<Customer> costumers = new ArrayList<>();
+       Connection con = pool.getConnection();
+       try {
+           PreparedStatement query = con.prepareStatement("SELECT * FROM customers");
+           ResultSet rs = query.executeQuery();
+           while (rs.next()) {
+               costumers.add(new Customer(rs.getInt(1), rs.getString(2),
+                       rs.getString(3), rs.getString(4), rs.getString(5)));
+               if (costumers.size() == 0) {
+                   return null;
+               }
+           }
+           return costumers;
+       }finally {
+           pool.restoreConnection(con);
+       }
+   }
 
     /**
      * This method returns you a costumer by its ID.
@@ -164,16 +174,18 @@ public class CustomersDaoImp implements CustomersDao {
      * @return - The costumer by its ID or null if there is no such id in the DB.
      * @throws SQLException - Throws an exception if there was an error during the connection to the SQL.
      */
-    @Override
+   @Override
     public Customer getOneCustomer(int customerId) throws SQLException {
-        Connection con = pool.getConnection();
-        PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM customers where id=" + customerId);
-        ResultSet rs = gettingCustomer.executeQuery();
-        if (rs.next()) {
-            return new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
-        }
-
-        pool.restoreConnection(con);
-        return null;
+       Connection con = pool.getConnection();
+       try {
+           PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM customers where id=" + customerId);
+           ResultSet rs = gettingCustomer.executeQuery();
+           if (rs.next()) {
+               return new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+           }
+           return null;
+       }finally {
+           pool.restoreConnection(con);
+       }
     }
 }
