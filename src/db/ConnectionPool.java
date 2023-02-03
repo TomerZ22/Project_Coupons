@@ -16,7 +16,7 @@ public class ConnectionPool {
         // create 5 connections
         for (int i = 0; i < MAX_CONNECTIONS; i++) {
             try {
-                connections.add(DriverManager.getConnection("jdbc:mysql://localhost:3306/coupons?serverTimezone=UTC", "root", "Tomerz24"));
+                connections.add(DriverManager.getConnection("jdbc:mysql://localhost:3306/coupons?serverTimezone=UTC", "root", "1234"));
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }

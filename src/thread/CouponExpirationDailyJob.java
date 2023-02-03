@@ -33,7 +33,7 @@ public class CouponExpirationDailyJob implements Runnable {
                         couponsDao.deleteCoupon(coupon.getId());
                     }
                 }
-                Thread.sleep(1000 * 60 * 60 * 24);
+                Thread.sleep(1000);
             } catch (InterruptedException ignored) {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());

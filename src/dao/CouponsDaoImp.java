@@ -22,7 +22,7 @@ public class CouponsDaoImp implements CouponsDao {
     public void deleteCouponPurchaseHistory(int couponId) throws SQLException {
         Connection con = pool.getConnection();
         try {
-            PreparedStatement statement = con.prepareStatement("DELETE FROM coupons.coupons_vs_customers where coupons_id =" + couponId);
+            PreparedStatement statement = con.prepareStatement("DELETE FROM coupons.coupons_vs_customers where coupon_id =" + couponId);
             statement.execute();
         }finally {
             pool.restoreConnection(con);

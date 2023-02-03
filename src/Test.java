@@ -1,4 +1,10 @@
+import JavaBeans.Coupon;
+import dao.CouponsDaoImp;
+import thread.CouponExpirationDailyJob;
+
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class Test {
     public static void main(String[] args) throws SQLException{
@@ -16,7 +22,17 @@ public class Test {
 //        System.out.println(companies);
 
 //
+        Thread t = new Thread(new CouponExpirationDailyJob());
+        t.start();
 
+        CouponsDaoImp couponsDaoImp = new CouponsDaoImp();
+        ArrayList<Coupon> coupons = (ArrayList<Coupon>) couponsDaoImp.getAllCoupons();
+//        Coupon coupon = couponsDaoImp.getOneCoupon(1);
+        long dateMillis = System.currentTimeMillis();
+        Date date = new Date(dateMillis);
+        System.out.println(coupons.get(0).getEndDate().before(date));
+//        couponsDaoImp.deleteCouponPurchaseHistory(1);
+//        couponsDaoImp.deleteCoupon(1);
     }
 
 }
