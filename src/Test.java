@@ -11,16 +11,18 @@ import java.sql.SQLException;
 
 public class Test {
     public static void main(String[] args) throws SQLException {
+        Company company= new Company("workout with us","Sport@sport","9999");
+
         Coupon coupon = new Coupon(8, Category.SPORT, "Private workouts", "workouts",
                 Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
                 30, 30, " ");
-
-        Company company = new Company("Sport for you", "Sport@sport", "9999");
         try {
+
+            //logging in
             CompanyFacade companyFacade = (CompanyFacade) LoginManager.getInstance().login("Sport@sport",
                     "9999", ClientType.Company);
 
-//            System.out.println(companyFacade.getCompanyCoupons());
+            //creating the company's coupons
             Coupon coupon1 = new Coupon(8, Category.SPORT, "Private workouts pro", "workouts for pro's",
                     Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
                     30, 30, " ");
@@ -33,22 +35,33 @@ public class Test {
                     Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
                     30, 70, " ");
 
-//            companyFacade.addCoupons(coupon3);
-//            System.out.println(companyFacade.getCompanyCouponsUpToPrice(80));
+            //adding a coupons to the db
+//            companyFacade.addCoupons(coupon1);
 
-//            System.out.println(companyFacade.getCompanyCouponsByCategory(JavaBeans.Category.TOURISM));
+            //receiving coupon from the db
+//            Coupon coupon4=companyFacade.getOneCompanyCouponById();
 
-//            System.out.println(companyFacade.getCompanyCoupons());
+            //updating coupon
+//            coupon4.setDescription("High level training");
+//            companyFacade.updateCoupons(coupon4);
+
+            //delete all company's coupons
 //            companyFacade.deleteAllCompanyCoupons(8);
-//            Coupon coupon2=companyFacade.getOneCompanyCouponById(13);
-//            coupon2.setDescription("High level training");
-//            System.out.println(companyFacade.getCompanyDetails());
 
-//            Coupon coupon4 = companyFacade.getOneCompanyCouponById(16);
-//            companyFacade.deleteAllCompanyCoupons(6);
-//                        System.out.println(coupon4);
-//            companyFacade.updateCoupons(coupon2);
-//            companyFacade.deleteSingularCoupon(coupon3);
+            //delete singular coupon
+//            companyFacade.deleteSingularCoupon(coupon4);
+
+            //get all company's coupons
+//            companyFacade.getCompanyCoupons();
+
+            //get company coupon based on category
+//            companyFacade.getCompanyCouponsByCategory(JavaBeans.Category.TOURISM);
+
+            //get company's coupon up to price
+//            companyFacade.getCompanyCouponsUpToPrice(80);
+
+            //get the company's details
+//            companyFacade.getCompanyDetails();
 
         } catch (LoginErrorException e) {
             System.out.println(e.getMessage());

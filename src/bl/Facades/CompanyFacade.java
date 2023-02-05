@@ -129,7 +129,7 @@ public class CompanyFacade extends ClientFacade {
      * @throws SQLException
      * @throws NoCouponsToDeleteException
      */
-    public Coupon getOneCompanyCouponById(int id) throws SQLException, NoCouponsToDeleteException, CouponDoesntExistException {
+    public Coupon getOneCompanyCouponById(int id) throws SQLException, CouponDoesntExistException {
         List<Coupon> companyCoupons= getCompanyCoupons();
         for (Coupon coupon: companyCoupons){
             if (coupon.getId()==id)
