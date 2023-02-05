@@ -1,6 +1,10 @@
+import Exceptions.CompanyExistsException;
+import Exceptions.CustomerExistsException;
 import Exceptions.LoginErrorException;
 import JavaBeans.Company;
 import JavaBeans.Coupon;
+import JavaBeans.Customer;
+import bl.Facades.AdminFacade;
 import bl.Facades.CompanyFacade;
 import bl.Facades.login.LoginManager;
 import enums.Category;
@@ -8,16 +12,16 @@ import enums.ClientType;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Test {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args){
         Company company= new Company("workout with us","Sport@sport","9999");
 
         Coupon coupon = new Coupon(8, Category.SPORT, "Private workouts", "workouts",
                 Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
                 30, 30, " ");
         try {
-
             //logging in
             CompanyFacade companyFacade = (CompanyFacade) LoginManager.getInstance().login("Sport@sport",
                     "9999", ClientType.Company);
@@ -63,10 +67,48 @@ public class Test {
             //get the company's details
 //            companyFacade.getCompanyDetails();
 
-        } catch (LoginErrorException e) {
+        } catch (LoginErrorException | SQLException e) {
             System.out.println(e.getMessage());
         }
 
+
+    }
+
+    public static void testAdminFacade() throws LoginErrorException, SQLException, CompanyExistsException, CustomerExistsException {
+        //Logging in
+        AdminFacade adminFacade = (AdminFacade) LoginManager.getInstance().login("admin@gmail.com", "admin", ClientType.Administrator);
+
+        //Companies Methods:
+        Company c1 = new Company("TSLA", "elonTheG", "SpaceXYQEmberl0l");
+        adminFacade.addCompany(c1);
+
+        c1.setEmail("topGelonX@TSLA.com");
+        c1.setPassword("IDK123!");
+        adminFacade.updateCompany(c1); //Update
+
+        adminFacade.deleteCompany(c1); //Delete
+
+        ArrayList<Company> companies = (ArrayList<Company>) adminFacade.getAllCompanies(); //List of companies
+
+        Company company = adminFacade.getCompanyById(1); //One company from the DB
+        //----------------------------------------------------------------//
+
+        //Customers Methods:
+        Customer customer = new Customer("Jeff","Bezos", "I'mrichhahaha@amazon.org.com", "pimpxD");
+
+        adminFacade.addNewCustomer(customer);
+
+        customer.setLastName("Bezossss");
+        customer.setFirstName("My name is Jeff");
+        customer.setPassword("JeffmyNameis");
+        adminFacade.updateCustomer(customer);
+
+        adminFacade.deleteCustomer(customer.getId());
+        adminFacade.deleteCustomer(1);
+
+        ArrayList<Customer> customers = (ArrayList<Customer>) adminFacade.getAllCustomers();
+
+        Customer customer2 = adminFacade.getCustomerByID(1);
 
     }
 

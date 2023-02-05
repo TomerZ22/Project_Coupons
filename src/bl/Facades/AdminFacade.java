@@ -21,30 +21,31 @@ public class AdminFacade extends ClientFacade {
         return email.equals("admin@admin.com") && password.equals("admin");
     }
 
-    public void addCompany(Company company) throws CompanyExistsException, SQLException, CompanyExistsException {
+    /**
+     * This method adds a company to the database after checking if the name and email doesn't already exist
+     *
+     * @param company - The company to be added to the database.
+     * @throws CompanyExistsException - If the company already exists throw an exception
+     * @throws SQLException           - If an error occurs during the connection
+     */
+    public void addCompany(Company company) throws SQLException, CompanyExistsException {
         //Check if company.name and company.email do not exist!
         if (companyDao.getAllCompanies() == null || !companyDao.isCompanyExistByName_Email(company.getName(), company.getEmail()))
             companyDao.addCompany(company);
 
     }
 
-    //Fix this method the connection should be in the DAO!
+    /**
+     * This method updates a company to the database after checking if the name didn't change.
+     *
+     * @param company - The company to be updated.
+     * @throws SQLException           - If an error occurs during the connection.
+     * @throws CompanyExistsException - If the company name changed throw an error.
+     */
     public void updateCompany(Company company) throws SQLException, CompanyExistsException {
         //Cant update company ID - we don't have the SETTER for id so not need to check.
         //Cant update company name - Check with the id if the name is still the same at the database
-        ConnectionPool pool = ConnectionPool.getInstance();
-        Connection conn = pool.getConnection();
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM company WHERE id = " + company.getId());
-        ResultSet rs = ps.executeQuery();
-        if (!company.getName().equals(rs.getString(2))) {
-            pool.restoreConnection(conn);
-            throw new CompanyExistsException("You cannot update company name!");
-        }
-        ps.setString(3, company.getEmail());
-        ps.setString(4, company.getPassword());
-        ps.execute();
-
-        pool.restoreConnection(conn);
+        companyDao.updateCompanyAdminFacade(company);
     }
 
     /**
@@ -70,10 +71,23 @@ public class AdminFacade extends ClientFacade {
         return companyDao.getAllCompanies();
     }
 
+    /**
+     * This method returns a company by its identifier(ID).
+     *
+     * @param id - The identifier of the company to retrieve.
+     * @return - The company if exist.
+     * @throws SQLException - If an error occurs during the connection.
+     */
     public Company getCompanyById(int id) throws SQLException {
         return companyDao.getOneCompany(id);
     }
 
+    /**
+     * This method adds a Costumer to the DB table.
+     * @param customer - The new customer to add to the DB table.
+     * @throws CustomerExistsException - If a customer email is already exists.
+     * @throws SQLException - If an error occurs during the connection.
+     */
     public void addNewCustomer(Customer customer) throws CustomerExistsException, SQLException {
         if (!customersDao.isCustomerEmailExists(customer))
             customersDao.addCustomer(customer);
@@ -101,6 +115,11 @@ public class AdminFacade extends ClientFacade {
         customersDao.deleteCustomer(customerID);
     }
 
+    /**
+     * This method returns all the customers.
+     * @return - All the customers.
+     * @throws SQLException - If something went wrong during the connection with the DB.
+     */
     public List<Customer> getAllCustomers() throws SQLException {
         return customersDao.getAllCustomers();
     }
