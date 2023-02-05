@@ -43,7 +43,7 @@ public class CouponsDaoImp implements CouponsDao {
             PreparedStatement statement = con.prepareStatement("insert into coupons (company_id, category_id, title, description, start_date, end_date, amount, price, image)" +
                     "values(?,?,?,?,?,?,?,?,?)");
             statement.setInt(1, coupon.getCompanyId());
-            statement.setInt(2, coupon.getCategory().ordinal() + 1);
+            statement.setInt(2, coupon.getCategory().ordinal()+1);
             statement.setString(3, coupon.getTitle());
             statement.setString(4, coupon.getDescription());
             statement.setDate(5, coupon.getStartDate());
@@ -111,16 +111,16 @@ public class CouponsDaoImp implements CouponsDao {
      */
     @Override
     public List<Coupon> getAllCoupons() throws SQLException {
+        List<Coupon> coupons = new ArrayList<>();
         Connection con = pool.getConnection();
         try {
-            List<Coupon> coupons = new ArrayList<>();
             PreparedStatement statement = con.prepareStatement("select * from coupons");
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                coupons.add(new Coupon(rs.getInt(1), rs.getInt(2), Category.values()[rs.getInt(3)],
+                coupons.add(new Coupon(rs.getInt(1), rs.getInt(2), Category.values()[rs.getInt(3)- 1],
                         rs.getString(4), rs.getString(5), rs.getDate(6),
-                        rs.getDate(7), rs.getInt(8), rs.getDouble(8),
-                        rs.getString(9)));
+                        rs.getDate(7), rs.getInt(8), rs.getDouble(9),
+                        rs.getString(10)));
             }
             return coupons;
         } finally {
@@ -186,7 +186,7 @@ public class CouponsDaoImp implements CouponsDao {
     public void deleteCouponPurchase(int customerID, int couponID) throws SQLException {
         Connection con = pool.getConnection();
         try {
-            PreparedStatement statement = con.prepareStatement("delete from coupons_vs_customers where customer_id=" + customerID + " and coupons_id=" + couponID);
+            PreparedStatement statement = con.prepareStatement("delete from coupons_vs_customers where customer_id=" + customerID + " and coupon_id=" + couponID);
             statement.execute();
             System.out.println("coupon purchase deleted successfully");
         }finally {

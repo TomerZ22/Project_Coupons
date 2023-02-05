@@ -44,6 +44,7 @@ public class CompaniesDaoImp implements CompaniesDao {
         try {
             PreparedStatement ps = con.prepareStatement("DELETE FROM coupons.coupons WHERE company_id= " + id);
             ps.execute();
+            System.out.println("Coupons deleted successfully");
         }finally {
             pool.restoreConnection(con);
         }
@@ -81,11 +82,13 @@ public class CompaniesDaoImp implements CompaniesDao {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 if (Objects.equals(rs.getString(3), email) && Objects.equals(rs.getString(4), password)) {
+                    int companyId=rs.getInt(1);
                     preparedStatement.execute();
                     System.out.println("Company Exist");
-                    return 1;
+                    return companyId;
                 }
             }
+            System.out.println("Company doesn't exist");
             return -1;
         } finally {
             pool.restoreConnection(con);
@@ -106,7 +109,7 @@ public class CompaniesDaoImp implements CompaniesDao {
             preparedStatement.setString(2, company.getEmail());
             preparedStatement.setString(3, company.getPassword());
             preparedStatement.execute();
-            System.out.println("Company was Successfully Added");
+            System.out.println("Company added Successfully");
         }finally {
             pool.restoreConnection(con);
         }

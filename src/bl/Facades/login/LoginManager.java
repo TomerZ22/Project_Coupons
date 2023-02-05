@@ -32,8 +32,10 @@ public class LoginManager {
 
             case Company:
                 CompanyFacade companyFacade= new CompanyFacade();
-                if (companyFacade.login(email,password))
+                if (companyFacade.login(email,password)) {
+                    System.out.println("you are logged in");
                     return companyFacade;
+                }
                 else throw new LoginErrorException("Your email or password isn't valid");
 
             case Customer:

@@ -1,38 +1,66 @@
+import Exceptions.LoginErrorException;
+import JavaBeans.Company;
 import JavaBeans.Coupon;
-import dao.CouponsDaoImp;
-import thread.CouponExpirationDailyJob;
+import bl.Facades.CompanyFacade;
+import bl.Facades.login.LoginManager;
+import enums.Category;
+import enums.ClientType;
 
+import java.sql.Date;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
 
 public class Test {
-    public static void main(String[] args) throws SQLException{
+    public static void main(String[] args) throws SQLException {
+        Coupon coupon = new Coupon(8, Category.SPORT, "Private workouts", "workouts",
+                Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
+                30, 30, " ");
 
-//        Company company1 = new Company("Microsoft","Microsoft@outlook.com","1234");
-//        Customer customer1 = new Customer("Zuckerberg ", "Thief", "zuki@meta.com","Lolipop123");
-//        CompaniesDaoImp com = new CompaniesDaoImp();
-//        CustomersDaoImp customersDaoImp = new CustomersDaoImp();
+        Company company = new Company("Sport for you", "Sport@sport", "9999");
+        try {
+            CompanyFacade companyFacade = (CompanyFacade) LoginManager.getInstance().login("Sport@sport",
+                    "9999", ClientType.Company);
+
+//            System.out.println(companyFacade.getCompanyCoupons());
+            Coupon coupon1 = new Coupon(8, Category.SPORT, "Private workouts pro", "workouts for pro's",
+                    Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
+                    30, 30, " ");
+
+            Coupon coupon2 = new Coupon((8), Category.TOURISM, "Private workouts while touring", "workouts for travelers",
+                    Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
+                    30, 30, " ");
+
+            Coupon coupon3 = new Coupon((8), Category.TOURISM, "Private workouts while touring for pro's", "workouts for travelers",
+                    Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
+                    30, 70, " ");
+
+//            companyFacade.addCoupons(coupon3);
+//            System.out.println(companyFacade.getCompanyCouponsUpToPrice(80));
+
+//            System.out.println(companyFacade.getCompanyCouponsByCategory(JavaBeans.Category.TOURISM));
+
+//            System.out.println(companyFacade.getCompanyCoupons());
+//            companyFacade.deleteAllCompanyCoupons(8);
+//            Coupon coupon2=companyFacade.getOneCompanyCouponById(13);
+//            coupon2.setDescription("High level training");
+//            System.out.println(companyFacade.getCompanyDetails());
+
+//            Coupon coupon4 = companyFacade.getOneCompanyCouponById(16);
+//            companyFacade.deleteAllCompanyCoupons(6);
+//                        System.out.println(coupon4);
+//            companyFacade.updateCoupons(coupon2);
+//            companyFacade.deleteSingularCoupon(coupon3);
+
+        } catch (LoginErrorException e) {
+            System.out.println(e.getMessage());
+        }
 
 
-
-//        LoginManager loginManager = LoginManager.getInstance();
-//        AdminFacade admin = (AdminFacade) loginManager.Login("admin@admin.com", "admin", ClientType.Administrator);
-//        ArrayList<Company> companies = (ArrayList<Company>) admin.getAllCompanies();
-//        System.out.println(companies);
-
-//
-        Thread t = new Thread(new CouponExpirationDailyJob());
-        t.start();
-
-        CouponsDaoImp couponsDaoImp = new CouponsDaoImp();
-        ArrayList<Coupon> coupons = (ArrayList<Coupon>) couponsDaoImp.getAllCoupons();
-//        Coupon coupon = couponsDaoImp.getOneCoupon(1);
-        long dateMillis = System.currentTimeMillis();
-        Date date = new Date(dateMillis);
-        System.out.println(coupons.get(0).getEndDate().before(date));
-//        couponsDaoImp.deleteCouponPurchaseHistory(1);
-//        couponsDaoImp.deleteCoupon(1);
     }
 
 }
+
+
+
+
+
+
