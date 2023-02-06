@@ -30,9 +30,9 @@ public class AdminFacade extends ClientFacade {
      */
     public void addCompany(Company company) throws SQLException, CompanyExistsException {
         //Check if company.name and company.email do not exist!
-        if (companyDao.getAllCompanies() == null || !companyDao.isCompanyExistByName_Email(company.getName(), company.getEmail()))
+        if (companyDao.getAllCompanies() == null || !companyDao.isCompanyExistByName_Email(company.getName(), company.getEmail())) {
             companyDao.addCompany(company);
-
+        }
     }
 
     /**
@@ -43,7 +43,7 @@ public class AdminFacade extends ClientFacade {
      * @throws CompanyExistsException - If the company name changed throw an error.
      */
     public void updateCompany(Company company) throws SQLException, CompanyExistsException {
-        //Cant update company ID - we don't have the SETTER for id so not need to check.
+        //Cant update company ID
         //Cant update company name - Check with the id if the name is still the same at the database
         companyDao.updateCompanyAdminFacade(company);
     }
@@ -84,9 +84,10 @@ public class AdminFacade extends ClientFacade {
 
     /**
      * This method adds a Costumer to the DB table.
+     *
      * @param customer - The new customer to add to the DB table.
      * @throws CustomerExistsException - If a customer email is already exists.
-     * @throws SQLException - If an error occurs during the connection.
+     * @throws SQLException            - If an error occurs during the connection.
      */
     public void addNewCustomer(Customer customer) throws CustomerExistsException, SQLException {
         if (!customersDao.isCustomerEmailExists(customer))
@@ -117,6 +118,7 @@ public class AdminFacade extends ClientFacade {
 
     /**
      * This method returns all the customers.
+     *
      * @return - All the customers.
      * @throws SQLException - If something went wrong during the connection with the DB.
      */

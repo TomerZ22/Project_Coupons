@@ -15,6 +15,9 @@ public interface CompaniesDao {
     int isCompanyExists(String email, String password) throws SQLException;
     void addCompany(Company company) throws SQLException;
     void updateCompanyAdminFacade(Company company) throws SQLException, CompanyExistsException;
+
+    void updateCompany(Company company) throws SQLException;
+
     void deleteCompany(int companyId) throws SQLException;
     Company getOneCompany(int companyId) throws SQLException;
     List<Company> getAllCompanies() throws SQLException;

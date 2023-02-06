@@ -22,22 +22,22 @@ public class Test {
                 Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
                 30, 30, " ");
         try {
-            //logging in
-            CompanyFacade companyFacade = (CompanyFacade) LoginManager.getInstance().login("Sport@sport",
-                    "9999", ClientType.Company);
-
-            //creating the company's coupons
-            Coupon coupon1 = new Coupon(8, Category.SPORT, "Private workouts pro", "workouts for pro's",
-                    Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
-                    30, 30, " ");
-
-            Coupon coupon2 = new Coupon((8), Category.TOURISM, "Private workouts while touring", "workouts for travelers",
-                    Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
-                    30, 30, " ");
-
-            Coupon coupon3 = new Coupon((8), Category.TOURISM, "Private workouts while touring for pro's", "workouts for travelers",
-                    Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
-                    30, 70, " ");
+//            //logging in
+//            CompanyFacade companyFacade = (CompanyFacade) LoginManager.getInstance().login("Sport@sport",
+//                    "9999", ClientType.Company);
+//
+//            //creating the company's coupons
+//            Coupon coupon1 = new Coupon(8, Category.SPORT, "Private workouts pro", "workouts for pro's",
+//                    Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
+//                    30, 30, " ");
+//
+//            Coupon coupon2 = new Coupon((8), Category.TOURISM, "Private workouts while touring", "workouts for travelers",
+//                    Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
+//                    30, 30, " ");
+//
+//            Coupon coupon3 = new Coupon((8), Category.TOURISM, "Private workouts while touring for pro's", "workouts for travelers",
+//                    Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
+//                    30, 70, " ");
 
             //adding a coupons to the db
 //            companyFacade.addCoupons(coupon1);
@@ -67,7 +67,10 @@ public class Test {
             //get the company's details
 //            companyFacade.getCompanyDetails();
 
-        } catch (LoginErrorException | SQLException e) {
+            testAdminFacade();
+
+
+        } catch (LoginErrorException | SQLException | CustomerExistsException | CompanyExistsException e) {
             System.out.println(e.getMessage());
         }
 
@@ -76,22 +79,26 @@ public class Test {
 
     public static void testAdminFacade() throws LoginErrorException, SQLException, CompanyExistsException, CustomerExistsException {
         //Logging in
-        AdminFacade adminFacade = (AdminFacade) LoginManager.getInstance().login("admin@gmail.com", "admin", ClientType.Administrator);
+        AdminFacade adminFacade = (AdminFacade) LoginManager.getInstance().login("admin@admin.com", "admin", ClientType.Administrator);
 
         //Companies Methods:
-        Company c1 = new Company("TSLA", "elonTheG", "SpaceXYQEmberl0l");
-        adminFacade.addCompany(c1);
+        Company c1 = new Company("Amdocs", "amD0cs@gmail.co.il", "asdacvnh21  213-sdfg!@#as");
+//        adminFacade.addCompany(c1);
 
-        c1.setEmail("topGelonX@TSLA.com");
-        c1.setPassword("IDK123!");
-        adminFacade.updateCompany(c1); //Update
+//
+//        c1.setEmail("topGelonX@TSLA.com");
+//        c1.setPassword("IDK123!");
+//        adminFacade.updateCompany(c1); //Update
 
 //        adminFacade.deleteCompany(c1); //Delete
 
         ArrayList<Company> companies = (ArrayList<Company>) adminFacade.getAllCompanies(); //List of companies
-        System.out.println(companies);
+        for (Company c: companies) {
+            System.out.println(c);
+        }
 
         Company company = adminFacade.getCompanyById(1); //One company from the DB
+        System.out.println(company);
         //----------------------------------------------------------------//
 
         //Customers Methods:

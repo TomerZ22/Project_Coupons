@@ -5,10 +5,7 @@ import dao.daoInterfaces.CompaniesDao;
 import db.ConnectionPool;
 import Exceptions.CompanyExistsException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -108,12 +105,19 @@ public class CompaniesDaoImp implements CompaniesDao {
     public void addCompany(Company company) throws SQLException {
         Connection con = pool.getConnection();
         try {
-            PreparedStatement preparedStatement = con.prepareStatement("insert into companies(name,email,password) values(?,?,?)");
+            PreparedStatement preparedStatement = con.prepareStatement("insert into companies(company_name,email,password) values(?,?,?)", Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, company.getName());
             preparedStatement.setString(2, company.getEmail());
             preparedStatement.setString(3, company.getPassword());
             preparedStatement.execute();
             System.out.println("Company added Successfully");
+
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            int id = 0;
+            while (rs.next()) {
+                id = rs.getInt(1);
+            }
+            company.setId(id);
         } finally {
             pool.restoreConnection(con);
         }
@@ -124,19 +128,18 @@ public class CompaniesDaoImp implements CompaniesDao {
      * @param company
      * @throws SQLException
      */
-//    @Override
-//    public void updateCompany(Company company) throws SQLException {
-//        Connection con = pool.getConnection();
-//        try {
-//            PreparedStatement ps = con.prepareStatement("UPDATE companies SET name = ?, email = ?, password = ? where id =" + company.getId());
-//            ps.setString(1, company.getName());
-//            ps.setString(2, company.getEmail());
-//            ps.setString(3, company.getPassword());
-//            ps.execute();
-//        }finally {
-//            pool.restoreConnection(con);
-//        }
-//    }
+    @Override
+    public void updateCompany(Company company) throws SQLException {
+        Connection con = pool.getConnection();
+        try {
+            PreparedStatement ps = con.prepareStatement("UPDATE companies SET email = ?, password = ? where id =" + company.getId());
+            ps.setString(1, company.getEmail());
+            ps.setString(2, company.getPassword());
+            ps.execute();
+        }finally {
+            pool.restoreConnection(con);
+        }
+    }
 
     /**
      * This Method Deletes Company By ID
@@ -191,7 +194,7 @@ public class CompaniesDaoImp implements CompaniesDao {
         ArrayList<Company> companies = new ArrayList<>();
         Connection con = pool.getConnection();
         try {
-            PreparedStatement query = con.prepareStatement("SELECT * FROM customers");
+            PreparedStatement query = con.prepareStatement("SELECT * FROM companies");
             ResultSet rs = query.executeQuery();
             while (rs.next()) {
                 companies.add(new Company(rs.getInt(1), rs.getString(2),
@@ -218,15 +221,13 @@ public class CompaniesDaoImp implements CompaniesDao {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection conn = pool.getConnection();
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM company WHERE id = " + company.getId());
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM coupons.companies WHERE id = " + company.getId());
             ResultSet rs = ps.executeQuery();
-            if (!company.getName().equals(rs.getString(2))) {
-                pool.restoreConnection(conn);
-                throw new CompanyExistsException("You cannot update company name!");
+            if (rs.next()) {
+                if (!company.getName().equals(rs.getString(2)))
+                    throw new CompanyExistsException("You cannot update company name!");
             }
-            ps.setString(3, company.getEmail());
-            ps.setString(4, company.getPassword());
-            ps.execute();
+            this.updateCompany(company);
         } finally {
             pool.restoreConnection(conn);
         }
