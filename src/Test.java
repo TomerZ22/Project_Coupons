@@ -86,29 +86,29 @@ public class Test {
         c1.setPassword("IDK123!");
         adminFacade.updateCompany(c1); //Update
 
-        adminFacade.deleteCompany(c1); //Delete
+//        adminFacade.deleteCompany(c1); //Delete
 
         ArrayList<Company> companies = (ArrayList<Company>) adminFacade.getAllCompanies(); //List of companies
+        System.out.println(companies);
 
         Company company = adminFacade.getCompanyById(1); //One company from the DB
         //----------------------------------------------------------------//
 
         //Customers Methods:
-        Customer customer = new Customer("Jeff","Bezos", "I'mrichhahaha@amazon.org.com", "pimpxD");
-
-        adminFacade.addNewCustomer(customer);
-
-        customer.setLastName("Bezossss");
-        customer.setFirstName("My name is Jeff");
-        customer.setPassword("JeffmyNameis");
-        adminFacade.updateCustomer(customer);
-
-        adminFacade.deleteCustomer(customer.getId());
-        adminFacade.deleteCustomer(1);
-
-        ArrayList<Customer> customers = (ArrayList<Customer>) adminFacade.getAllCustomers();
-
-        Customer customer2 = adminFacade.getCustomerByID(1);
+//        Customer customer = new Customer("Jeff","Bezos", "I'mrichhahaha@amazon.org.com", "pimpxD");
+//
+//        adminFacade.addNewCustomer(customer);
+//
+//        customer.setLastName("Bezossss");
+//        customer.setFirstName("My name is Jeff");
+//        customer.setPassword("JeffmyNameis");
+//        adminFacade.updateCustomer(customer); //Update
+//
+//        adminFacade.deleteCustomer(1);//Delete
+//
+//        ArrayList<Customer> customers = (ArrayList<Customer>) adminFacade.getAllCustomers();//All customers
+//
+//        Customer customer2 = adminFacade.getCustomerByID(1);//Get customer
 
     }
 
