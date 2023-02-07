@@ -19,7 +19,7 @@ public class CustomerDaoImp implements CustomersDao {
     public void deleteCustomersCoupons(int customerId) throws SQLException {
         Connection con = pool.getConnection();
         try {
-            PreparedStatement ps = con.prepareStatement("DELETE FROM coupons_vs_customers WHERE custumers_id=" + customerId);
+            PreparedStatement ps = con.prepareStatement("DELETE FROM coupons_vs_customers WHERE customer_id=" + customerId);
             ps.execute();
         }finally {
             pool.restoreConnection(con);
@@ -39,8 +39,7 @@ public class CustomerDaoImp implements CustomersDao {
             PreparedStatement ps = con.prepareStatement("SELECT email FROM customers");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                if (rs.getString(4).equals(customer.getEmail())) {
-                    pool.restoreConnection(con);
+                if (rs.getString("email").equals(customer.getEmail())) {
                     throw new CustomerExistsException("Customer already exists");
                 }
             }
@@ -175,7 +174,7 @@ public class CustomerDaoImp implements CustomersDao {
      * @throws SQLException - Throws an exception if there was an error during the connection to the SQL.
      */
    @Override
-    public Customer getOneCustomer(int customerId) throws SQLException {
+    public Customer getOneCustomer(int customerId) throws SQLException, CustomerExistsException {
        Connection con = pool.getConnection();
        try {
            PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM customers where id=" + customerId);
@@ -183,7 +182,8 @@ public class CustomerDaoImp implements CustomersDao {
            if (rs.next()) {
                return new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
            }
-           return null;
+           throw new CustomerExistsException("The customer does not exist");
+//           return null;
        }finally {
            pool.restoreConnection(con);
        }

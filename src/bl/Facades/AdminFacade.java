@@ -134,7 +134,7 @@ public class AdminFacade extends ClientFacade {
      * @throws SQLException - if an error occurs while retrieving the Customer or
      *                      connecting to the database is encountered.
      */
-    public Customer getCustomerByID(int id) throws SQLException {
+    public Customer getCustomerByID(int id) throws SQLException, CustomerExistsException {
         return customersDao.getOneCustomer(id);
     }
 
