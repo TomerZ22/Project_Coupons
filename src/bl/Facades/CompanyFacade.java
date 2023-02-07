@@ -135,7 +135,7 @@ public class CompanyFacade extends ClientFacade {
             if (coupon.getId()==id)
                 return coupon;
         }
-      throw new CouponDoesntExistException();
+      throw new CouponDoesntExistException("There Aren't any Coupon");
     }
 
     /**
