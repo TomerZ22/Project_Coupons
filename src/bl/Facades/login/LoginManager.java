@@ -1,8 +1,8 @@
 package bl.Facades.login;
-
 import Exceptions.LoginErrorException;
 import bl.Facades.AdminFacade;
 import bl.Facades.ClientFacade;
+import bl.Facades.CompanyFacade;
 import enums.ClientType;
 
 import java.sql.SQLException;
@@ -31,9 +31,11 @@ public class LoginManager {
                     throw new LoginErrorException("Your email or password isn't valid");
 
             case Company:
-                bl.CompanyFacade companyFacade= new bl.CompanyFacade();
-                if (companyFacade.login(email,password))
+                CompanyFacade companyFacade= new CompanyFacade();
+                if (companyFacade.login(email,password)) {
+                    System.out.println("you are logged in");
                     return companyFacade;
+                }
                 else throw new LoginErrorException("Your email or password isn't valid");
 
             case Customer:

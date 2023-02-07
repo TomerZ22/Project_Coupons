@@ -1,17 +1,18 @@
-package bl;
+package bl.Facades;
 
-import Exception.CouponTitleExistsException;
+import Exceptions.CouponTitleExistsException;
 import JavaBeans.Category;
 import JavaBeans.Company;
 import JavaBeans.Coupon;
-import bl.Facades.ClientFacade;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompanyFacade extends ClientFacade
-{
+public class CompanyFacade extends ClientFacade {
     private int companyID;
+
+    public CompanyFacade() throws SQLException {}
 
     /**
      * This method allows access to the facade throw log in validation
@@ -28,15 +29,14 @@ public class CompanyFacade extends ClientFacade
 
     /**
      * This method allows company to add (publish) new coupon
-     * @param coupon
+     * @param coupon the coupon we will publish
      * @throws SQLException
      * @throws CouponTitleExistsException
      */
     public void addCoupons(Coupon coupon) throws SQLException, CouponTitleExistsException {
-        List<Coupon> coupons=couponDao.getAllCoupons();
-        boolean titleExist=false;
-        for (int i = 0; i < coupons.size(); i++) {
-            if (coupon.getTitle().equals(coupons.get(i).getTitle())){
+        List<Coupon> companyCoupons = getCompanyCoupons();
+        for (int i = 0; i < companyCoupons.size(); i++) {
+            if (coupon.getTitle().equals(companyCoupons.get(i).getTitle())) {
                 throw new CouponTitleExistsException("You already published a coupon with the same title, please change the title");
             }
         }
@@ -45,7 +45,7 @@ public class CompanyFacade extends ClientFacade
 
     /**
      * This method updates coupon except to coupon id and company id
-     * @param coupon
+     * @param coupon the coupon to update
      * @throws SQLException
      */
     public void updateCoupons(Coupon coupon) throws SQLException {
@@ -53,12 +53,25 @@ public class CompanyFacade extends ClientFacade
     }
 
     /**
-     * This method deletes a coupon based on it's id
-     * @param coupon
+     * This method deletes all the coupons of a company based on it's id
+     * @param companyID
      * @throws SQLException
      */
-    public void deleteCoupons(Coupon coupon) throws SQLException {
-        companyDao.deleteCompanyCoupons(coupon.getId());
+    public void deleteAllCompanyCoupons(int companyID) throws SQLException {
+        companyDao.deleteCompanyCoupons(companyID);
+    }
+
+    /**
+     * This method allows companies to delete a singular coupon
+     * @param coupon the coupon you wish to delete
+     * @throws SQLException
+     * @throws NoCouponsToDeleteException in case the coupon isn't related to the company or not found in the db
+     */
+    public void deleteSingularCoupon(Coupon coupon) throws SQLException, NoCouponsToDeleteException {
+        if (coupon.getCompanyId()==companyID)
+        couponDao.deleteCoupon(coupon.getId());
+        else
+            throw new NoCouponsToDeleteException();
     }
 
     /**
@@ -67,9 +80,9 @@ public class CompanyFacade extends ClientFacade
      * @throws SQLException
      */
     public List<Coupon> getCompanyCoupons () throws SQLException {
-        List<Coupon>allCoupons= couponDao.getAllCoupons();
+        List<Coupon>allCoupons=couponDao.getAllCoupons();
         List<Coupon>companyCoupons=new ArrayList<>();
-        for (int i = 0; i < allCoupons.size(); i++) {
+        for (int i = 0; i <allCoupons.size(); i++) {
           if (companyID==allCoupons.get(i).getCompanyId())
             companyCoupons.add(allCoupons.get(i));
         }
@@ -77,16 +90,16 @@ public class CompanyFacade extends ClientFacade
     }
 
     /**
-     * This method returns coupons owned by company based on a given category
-     * @param category
-     * @returnlist of coupons from a given category
+     * This method returns coupons from a certain category owned by the company
+     * @param category the field that the given coupons will be related to
+     * @returnlist of the company's coupons from a given category
      * @throws SQLException
      */
     public List<Coupon> getCompanyCouponsByCategory (Category category) throws SQLException {
+        List<Coupon> companyCoupons= getCompanyCoupons();
         List<Coupon>getCompanyCouponsByCategory=new ArrayList<>();
-        List<Coupon>companyCoupons=getCompanyCoupons();
         for (int i = 0; i < companyCoupons.size(); i++) {
-            if (category==companyCoupons.get(i).getCategory())
+            if (category.name()==companyCoupons.get(i).getCategory().name())
                 getCompanyCouponsByCategory.add(companyCoupons.get(i));
         }
         return getCompanyCouponsByCategory;
@@ -94,19 +107,35 @@ public class CompanyFacade extends ClientFacade
 
     /**
      * This method returns coupons of a company up to a given price
-     * @param maxPrice
+     * @param maxPrice receives a double that set the maximum price
      * @return list of coupons
      * @throws SQLException
      */
     public List<Coupon> getCompanyCouponsUpToPrice (double maxPrice) throws SQLException {
-        List<Coupon>allCompanyCoupons=getCompanyCoupons();
+        List<Coupon> companyCoupons= getCompanyCoupons();
         List<Coupon>companyCouponsUpToPrice=new ArrayList<>();
-        for (int i = 0; i < allCompanyCoupons.size(); i++) {
-            if (maxPrice>allCompanyCoupons.get(i).getPrice()){
-                companyCouponsUpToPrice.add(allCompanyCoupons.get(i));
+        for (int i = 0; i < companyCoupons.size(); i++) {
+            if (maxPrice>companyCoupons.get(i).getPrice()){
+                companyCouponsUpToPrice.add(companyCoupons.get(i));
             }
         }
         return companyCouponsUpToPrice;
+    }
+
+    /**
+     *      * Added a method that return a singular coupon based on its id
+     *      * @return the coupon identified with the given id
+     * @param id of the coupon
+     * @throws SQLException
+     * @throws NoCouponsToDeleteException
+     */
+    public Coupon getOneCompanyCouponById(int id) throws SQLException, CouponDoesntExistException {
+        List<Coupon> companyCoupons= getCompanyCoupons();
+        for (Coupon coupon: companyCoupons){
+            if (coupon.getId()==id)
+                return coupon;
+        }
+      throw new CouponDoesntExistException();
     }
 
     /**

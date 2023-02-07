@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class CustomerDaoImp implements CustomersDao {
     private ConnectionPool pool = ConnectionPool.getInstance();
-    
+
     /**
      * This method is called in the AdminFacade, in order to delete all coupons of a specific customer.
      *
@@ -20,7 +20,7 @@ public class CustomerDaoImp implements CustomersDao {
         Connection con = pool.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement("DELETE FROM coupons_vs_customers WHERE custumers_id=" + customerId);
-            ps.execute(); 
+            ps.execute();
         }finally {
             pool.restoreConnection(con);
         }
