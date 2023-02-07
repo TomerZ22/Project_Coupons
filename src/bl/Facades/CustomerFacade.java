@@ -1,6 +1,5 @@
 package bl.Facades;
 
-import Exceptions.CustomerExistsException;
 import JavaBeans.Coupon;
 import JavaBeans.Customer;
 import enums.Category;
@@ -77,7 +76,7 @@ public class CustomerFacade extends ClientFacade {
     }
 
 
-    public Customer getCustomerDetails() throws SQLException, CustomerExistsException {
+    public Customer getCustomerDetails() throws SQLException {
         return customersDao.getOneCustomer(customerID);
     }
 }

@@ -92,18 +92,18 @@ public class Test {
 
 //        adminFacade.deleteCompany(c1); //Delete
 
-//        ArrayList<Company> companies = (ArrayList<Company>) adminFacade.getAllCompanies(); //List of companies
-//        for (Company c: companies) {
-//            System.out.println(c);
-//        }
-//
-//        Company company = adminFacade.getCompanyById(1); //One company from the DB
-//        System.out.println(company);
+        ArrayList<Company> companies = (ArrayList<Company>) adminFacade.getAllCompanies(); //List of companies
+        for (Company c: companies) {
+            System.out.println(c);
+        }
+
+        Company company = adminFacade.getCompanyById(1); //One company from the DB
+        System.out.println(company);
         //----------------------------------------------------------------//
 
         //Customers Methods:
-        Customer customer = new Customer("Jeff","Bezos", "I'mrichhahaha@amazon.org.com", "pimpxD");
-
+//        Customer customer = new Customer("Jeff","Bezos", "I'mrichhahaha@amazon.org.com", "pimpxD");
+//
 //        adminFacade.addNewCustomer(customer);
 //
 //        customer.setLastName("Bezossss");
@@ -112,14 +112,10 @@ public class Test {
 //        adminFacade.updateCustomer(customer); //Update
 //
 //        adminFacade.deleteCustomer(1);//Delete
-
+//
 //        ArrayList<Customer> customers = (ArrayList<Customer>) adminFacade.getAllCustomers();//All customers
-//        for (Customer c: customers) {
-//            System.out.println(c);
-//        }
 //
 //        Customer customer2 = adminFacade.getCustomerByID(1);//Get customer
-//        System.out.println(customer2);
 
     }
 
