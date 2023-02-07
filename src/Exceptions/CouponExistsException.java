@@ -1,4 +1,4 @@
-package bl.Facades;
+package Exceptions;
 
 public class CouponExistsException extends Throwable {
     public CouponExistsException(String this_coupon_has_been_bought) {

@@ -1,6 +1,8 @@
 package bl.Facades;
 
+import Exceptions.CouponDoesntExistException;
 import Exceptions.CouponTitleExistsException;
+import Exceptions.NoCouponsToDeleteException;
 import JavaBeans.Category;
 import JavaBeans.Company;
 import JavaBeans.Coupon;

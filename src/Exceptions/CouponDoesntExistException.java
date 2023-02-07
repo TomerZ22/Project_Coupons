@@ -1,4 +1,4 @@
-package bl.Facades;
+package Exceptions;
 
 public class CouponDoesntExistException extends Exception{
     public CouponDoesntExistException(String s) {
