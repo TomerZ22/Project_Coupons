@@ -11,20 +11,28 @@ import java.util.List;
 import java.util.Objects;
 
 public class CustomerFacade extends ClientFacade {
+
+    private int customerID;
+
+    public CustomerFacade() throws SQLException{};
+    
+//saving the list in order to use numeros times
+    List<Coupon> allCoupons= couponDao.getAllCoupons();
+    
     @Override
     public boolean login(String email, String password) throws SQLException {
         customerID = customersDao.isCustomerExist(email, password);
         return customerID != -1;
-
     }
 
-    private int customerID;
+    public List<Coupon> getAllCoupons() throws SQLException {
+       return allCoupons;
+    }
 
     public void purchaseCoupon(Coupon coupon) throws SQLException {
-        List<Coupon> coupons = couponDao.getAllCoupons();
         couponDao.addCouponPurchase(customerID, coupon.getId());
         int count = coupon.getAmount();
-        if (coupons.contains(coupon) && coupon.getPrice() == 0) {
+        if (allCoupons.contains(coupon) && coupon.getPrice() == 0) {
             if (!Objects.equals(coupon.getEndDate(), Date.valueOf(LocalDate.now()))) {
                 couponDao.addCoupon(coupon);
                 System.out.println("Nice Buy");
@@ -36,21 +44,18 @@ public class CustomerFacade extends ClientFacade {
         }
     }
 
-    public List<Coupon> getCustomerCoupons() throws SQLException {
-        List<Coupon> allCustomerCoupons = couponDao.getAllCoupons();
-        for (int i = 0; i < allCustomerCoupons.size(); i++) {
-            if (!allCustomerCoupons.contains(null)) {
+    public void DeleteCustomerCoupons() throws SQLException {
+        for (int i = 0; i < allCoupons.size(); i++) {
+            if (!allCoupons.contains(null)) {
                 customersDao.deleteCustomersCoupons(customerID);
-                System.out.println("Successfully Deleted All of Your Coupons");
             } else
                 System.out.println("Nope");
-
         }
-        return allCustomerCoupons;
+        System.out.println("Successfully Deleted All of Your Coupons");
     }
 
-    public List<Coupon> getCustomerCoupons(Category category) throws SQLException {
-        List<Coupon> allCustomerCoupons = couponDao.getAllCoupons();
+    public List<Coupon> getCustomerCouponsByCategory(Category category) throws SQLException {
+        List<Coupon> allCustomerCoupons = allCoupons;
         for (Coupon allCustomerCoupon : allCustomerCoupons) {
             if (category == allCustomerCoupon.getCategory()) {
                 customersDao.deleteCustomersCoupons(customerID);
@@ -63,9 +68,9 @@ public class CustomerFacade extends ClientFacade {
     }
 
 
-    public List<Coupon> getCustomerCoupons(double maxPrice) throws SQLException {
-        List<Coupon> allCustomerCoupons = couponDao.getAllCoupons();
-        for (Coupon allCustomerCoupon : allCustomerCoupons) {
+    public List<Coupon> getCustomerCouponsByPrice(double maxPrice) throws SQLException {
+        List<Coupon> allCustomerCoupons= allCoupons;
+        for (Coupon allCustomerCoupon : allCoupons) {
             if (maxPrice == allCustomerCoupon.getPrice()) {
                 customersDao.deleteCustomersCoupons(customerID);
                 System.out.println("Successfully Deleted All of Your Coupons By MaxPrice");
