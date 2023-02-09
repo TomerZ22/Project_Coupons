@@ -200,7 +200,6 @@ public class CouponsDaoImp implements CouponsDao {
      * @param couponId
      * @param customerId
      * @return true if the customer already bought this coupon and false if he didn't
-     * @throws SQLException
      */
     public boolean didCouponAlreadyPurchased(int couponId, int customerId) throws SQLException {
         Connection con = pool.getConnection();

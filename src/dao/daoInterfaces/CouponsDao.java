@@ -16,5 +16,5 @@ public interface CouponsDao {
 
     void deleteCouponPurchaseHistory(int id) throws SQLException;
 
-    boolean didCouponAlreadyPurchased(int id, int customerID);
+    boolean didCouponAlreadyPurchased(int id, int customerID) throws SQLException;
 }
