@@ -1,10 +1,8 @@
-package bl.Facades.login;
+package Exceptions;
 
-public class CouponPriceDosentExist extends Throwable
-{
+public class CouponPriceDosentExist extends Throwable{
 
-    public CouponPriceDosentExist(String this_coupon_Categroy_isnt_available)
-    {
+    public CouponPriceDosentExist(){
         super("The Coupon Price Isn't Match The Coupon You Are Seeking");
     }
 }
