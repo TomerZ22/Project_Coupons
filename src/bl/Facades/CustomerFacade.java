@@ -1,87 +1,84 @@
 package bl.Facades;
 
+import Exceptions.CouponDoesntExistException;
+import Exceptions.CustomerExistsException;
+import JavaBeans.Category;
 import JavaBeans.Coupon;
 import JavaBeans.Customer;
-import enums.Category;
+import bl.Facades.login.CouponPriceDosentExist;
 
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class CustomerFacade extends ClientFacade {
-
-    private int customerID;
-
-    public CustomerFacade() throws SQLException{};
-    
-//saving the list in order to use numeros times
-    List<Coupon> allCoupons= couponDao.getAllCoupons();
-    
     @Override
     public boolean login(String email, String password) throws SQLException {
         customerID = customersDao.isCustomerExist(email, password);
+        System.out.println("Logged In");
         return customerID != -1;
+
     }
 
-    public List<Coupon> getAllCoupons() throws SQLException {
-       return allCoupons;
-    }
+    private int customerID;
 
-    public void purchaseCoupon(Coupon coupon) throws SQLException {
-        couponDao.addCouponPurchase(customerID, coupon.getId());
-        int count = coupon.getAmount();
-        if (allCoupons.contains(coupon) && coupon.getPrice() == 0) {
-            if (!Objects.equals(coupon.getEndDate(), Date.valueOf(LocalDate.now()))) {
-                couponDao.addCoupon(coupon);
-                System.out.println("Nice Buy");
-                count--;
-            } else {
-                System.out.println("Sorry The Coupon Isn't Available");
+    public void purchaseCoupon(Coupon coupon) throws SQLException, CouponDoesntExistException {
+        List<Coupon> CustomerCoupons = getCustomerCoupons();
+        for (int i = 0; i < CustomerCoupons.size(); i++) {
+            if (coupon.getTitle().equals(CustomerCoupons.get(i).getTitle())
+                    || coupon.getAmount() <= 0 || Objects.equals(coupon.getEndDate(), Date.valueOf(LocalDate.now()))) {
+
+                throw new CouponDoesntExistException("The Coupon doesn't Exist");
             }
-            coupon.setAmount(count);
+            CustomerCoupons.add(coupon);
+            System.out.println("Nice Buy");
         }
     }
+    public List<Coupon> getCustomerCoupons() throws SQLException, CouponDoesntExistException {
+        List<Coupon> allCoupons = couponDao.getAllCoupons();
+        List<Coupon>CustomerCoupons= new ArrayList<>();
+        for (Coupon allCoupon : allCoupons) {
+            if (customerID == allCoupon.getId())
+            {
+                CustomerCoupons.add(allCoupon);
+                System.out.println("Successfully Got Your Coupon List");
+            }
+            throw new CouponDoesntExistException("You Have None Coupons");
+        }
+        return CustomerCoupons;
+    }
 
-    public void DeleteCustomerCoupons() throws SQLException {
-        for (int i = 0; i < allCoupons.size(); i++) {
-            if (!allCoupons.contains(null)) {
-                customersDao.deleteCustomersCoupons(customerID);
+    public List<Coupon> getCustomerCouponsByCategory(Category category) throws SQLException, CouponDoesntExistException {
+            List<Coupon> CustomerCoupons = getCustomerCoupons();
+            List<Coupon> allCustomersCouponsByCategory = new ArrayList<>();
+        for (Coupon customerCoupon : CustomerCoupons) {
+            if (category.name().equals(customerCoupon.getCategory().name())) {
+                allCustomersCouponsByCategory.add(customerCoupon);
+                System.out.println("Successfully Add Coupon By Category");
+            }
+                throw new CouponDoesntExistException("Invalid Category");
+        }
+        return CustomerCoupons;
+    }
+
+    public List<Coupon> getCustomerCouponsUpToPrice(double maxPrice) throws SQLException, CouponDoesntExistException, CouponPriceDosentExist {
+        List<Coupon> CustomerCoupons = getCustomerCoupons();
+        List<Coupon> allCustomersCouponsByPrice = new ArrayList<>();
+       for (int i = 0; i <CustomerCoupons.size() ; i++)
+            {
+            if (maxPrice > CustomerCoupons.get(i).getPrice()) {
+                allCustomersCouponsByPrice.add(CustomerCoupons.get(i));
+                System.out.println("Successfully Add Coupon By MaxPrice");
             } else
-                System.out.println("Nope");
+                throw new CouponPriceDosentExist("The Coupon Price isn't Valid");
         }
-        System.out.println("Successfully Deleted All of Your Coupons");
+        return allCustomersCouponsByPrice;
     }
 
-    public List<Coupon> getCustomerCouponsByCategory(Category category) throws SQLException {
-        List<Coupon> allCustomerCoupons = allCoupons;
-        for (Coupon allCustomerCoupon : allCustomerCoupons) {
-            if (category == allCustomerCoupon.getCategory()) {
-                customersDao.deleteCustomersCoupons(customerID);
-                System.out.println("Successfully Deleted All of Your Coupons By Category");
-            } else
-                System.out.println("Nope");
-
-        }
-        return allCustomerCoupons;
-    }
-
-
-    public List<Coupon> getCustomerCouponsByPrice(double maxPrice) throws SQLException {
-        List<Coupon> allCustomerCoupons= allCoupons;
-        for (Coupon allCustomerCoupon : allCoupons) {
-            if (maxPrice == allCustomerCoupon.getPrice()) {
-                customersDao.deleteCustomersCoupons(customerID);
-                System.out.println("Successfully Deleted All of Your Coupons By MaxPrice");
-            } else
-                System.out.println("Nope");
-        }
-        return allCustomerCoupons;
-    }
-
-
-    public Customer getCustomerDetails() throws SQLException {
+    public Customer getCustomerDetails() throws SQLException, CustomerExistsException {
         return customersDao.getOneCustomer(customerID);
     }
 }

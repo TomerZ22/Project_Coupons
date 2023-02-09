@@ -64,7 +64,7 @@ public class CustomerDaoImp implements CustomersDao {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 if (rs.getString(4).equals(email) && rs.getString(5).equals(password)) {
-                    return 1;
+                    return rs.getInt(1);
                 }
             }
             return -1;
