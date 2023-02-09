@@ -193,5 +193,28 @@ public class CouponsDaoImp implements CouponsDao {
             pool.restoreConnection(con);
         }
     }
+    
+    /**
+     * This method will be used at the facade layer to make sure a customter will not be able to buy the same coupon
+     * more than once
+     * @param couponId
+     * @param customerId
+     * @return true if the customer already bought this coupon and false if he didn't
+     * @throws SQLException
+     */
+    public boolean didCouponAlreadyPurchased(int couponId, int customerId) throws SQLException {
+        Connection con = pool.getConnection();
+        try {
+            PreparedStatement statement = con.prepareStatement("select * from coupons_vs_customers");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                if (rs.getInt(1)==customerId&&rs.getInt(2)==couponId)
+                    return true;
+            }
+            return false;
+    }finally {
+            pool.restoreConnection(con);
+        }
+    }
 }
 
