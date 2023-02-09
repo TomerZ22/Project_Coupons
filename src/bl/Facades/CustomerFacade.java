@@ -29,31 +29,45 @@ public class CustomerFacade extends ClientFacade {
        return allCoupons;
     }
 
-    public void purchaseCoupon(Coupon coupon) throws SQLException {
-        couponDao.addCouponPurchase(customerID, coupon.getId());
-        int count = coupon.getAmount();
-        if (allCoupons.contains(coupon) && coupon.getPrice() == 0) {
-            if (!Objects.equals(coupon.getEndDate(), Date.valueOf(LocalDate.now()))) {
-                couponDao.addCoupon(coupon);
-                System.out.println("Nice Buy");
-                count--;
-            } else {
-                System.out.println("Sorry The Coupon Isn't Available");
+    public void purchaseCoupon(Coupon coupon) throws SQLException, CouponAlreadyBoughtException {
+        for (int i = 0; i < couponsDao.getAllCoupons().size(); i++) {
+            if (couponsDao.didCouponAlreadyPurchased(coupon.getId(), customerID)) {
+                throw new CouponAlreadyBoughtException();
             }
-            coupon.setAmount(count);
         }
-    }
-
-    public void DeleteCustomerCoupons() throws SQLException {
+            couponsDao.addCouponPurchase(customerID, coupon.getId());
+            int count = coupon.getAmount();
+            if (allCoupons.contains(coupon) && coupon.getPrice() == 0) {
+                if (!Objects.equals(coupon.getEndDate(), Date.valueOf(LocalDate.now()))) {
+                    couponsDao.addCoupon(coupon);
+                    System.out.println("Nice Buy");
+                    count--;
+                } else {
+                    System.out.println("Sorry The Coupon Isn't Available");
+                }
+                coupon.setAmount(count);
+            }
+        }
+    
+    
+      /**
+     * This method will return all coupons that bought by the customer that logged in
+     * @return list of customer coupon
+     * @throws SQLException,EmptyCartException in case of sql failure or empty list of bought coupons
+     */
+    public List<Coupon> getCustomerCoupons() throws SQLException, EmptyCartException {
+        List<Coupon> customerCoupons = new ArrayList<>();
         for (int i = 0; i < allCoupons.size(); i++) {
-            if (!allCoupons.contains(null)) {
-                customersDao.deleteCustomersCoupons(customerID);
-            } else
-                System.out.println("Nope");
+            if (couponsDao.didCouponAlreadyPurchased(allCoupons.get(i).getId(), customerID)) {
+                customerCoupons.add(allCoupons.get(i));
+            }
         }
-        System.out.println("Successfully Deleted All of Your Coupons");
+        if (customerCoupons.size()==0){
+           throw new EmptyCartException();
+        }
+        return customerCoupons;
     }
-
+        
     public List<Coupon> getCustomerCouponsByCategory(Category category) throws SQLException {
         List<Coupon> allCustomerCoupons = allCoupons;
         for (Coupon allCustomerCoupon : allCustomerCoupons) {
