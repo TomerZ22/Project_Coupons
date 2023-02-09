@@ -37,18 +37,17 @@ public class CustomerFacade extends ClientFacade {
             System.out.println("Nice Buy");
         }
     }
-    public List<Coupon> getCustomerCoupons() throws SQLException, CouponDoesntExistException {
-        List<Coupon> allCoupons = couponDao.getAllCoupons();
-        List<Coupon>CustomerCoupons= new ArrayList<>();
-        for (Coupon allCoupon : allCoupons) {
-            if (customerID == allCoupon.getId())
-            {
-                CustomerCoupons.add(allCoupon);
-                System.out.println("Successfully Got Your Coupon List");
+    public List<Coupon> getCustomerCoupons() throws SQLException, EmptyCartException {
+        List<Coupon> customerCoupons = new ArrayList<>();
+        for (int i = 0; i < allCoupons.size(); i++) {
+            if (couponsDao.didCouponAlreadyPurchased(allCoupons.get(i).getId(), customerID)) {
+                customerCoupons.add(allCoupons.get(i));
             }
-            throw new CouponDoesntExistException("You Have None Coupons");
         }
-        return CustomerCoupons;
+        if (customerCoupons.size()==0){
+           throw new EmptyCartException();
+        }
+        return customerCoupons;
     }
 
     public List<Coupon> getCustomerCouponsByCategory(Category category) throws SQLException, CouponDoesntExistException {
