@@ -15,6 +15,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class CustomerFacade extends ClientFacade {
+    
+    //in order to reuse the list of all coupons without calling the dao layer
+    List<Coupon> allCoupons= couponsDao.getAllCoupons();
+    
     @Override
     public boolean login(String email, String password) throws SQLException {
         customerID = customersDao.isCustomerExist(email, password);
