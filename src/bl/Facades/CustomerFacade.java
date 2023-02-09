@@ -40,7 +40,6 @@ public class CustomerFacade extends ClientFacade {
         }
     }
     public List<Coupon> getCustomerCoupons() throws SQLException, EmptyCartException {
-        List<Coupon> allCoupons = couponDao.getAllCoupons();
         List<Coupon> customerCoupons = new ArrayList<>();
         for (int i = 0; i < allCoupons.size(); i++) {
             if (couponDao.didCouponAlreadyPurchased(allCoupons.get(i).getId(), customerID)) {
