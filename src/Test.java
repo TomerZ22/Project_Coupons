@@ -81,7 +81,7 @@ public class Test {
 
 
         } catch (LoginErrorException | SQLException | CustomerExistsException | CompanyExistsException |
-                 CouponTitleExistsException | CouponDoesntExistException | EmptyCartException | CouponPriceDoesntExist | NoCouponsToDeleteException e) {
+                 CouponTitleExistsException | CouponDoesntExistException  | NoCouponsToDeleteException e) {
             System.out.println(e.getMessage());
         }
 
