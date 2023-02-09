@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class CustomerFacade extends ClientFacade {
-    
-    
     @Override
     public boolean login(String email, String password) throws SQLException {
         customerID = customersDao.isCustomerExist(email, password);
