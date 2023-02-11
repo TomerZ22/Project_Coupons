@@ -21,11 +21,13 @@ public class Test {
         try {
             CustomerDaoImp customerDaoImp = new CustomerDaoImp();
             ArrayList<Customer> customers = customerDaoImp.getAllCustomers();
+            Customer customer1 = customerDaoImp.getOneCustomer(3);
+            System.out.println(customer1 + "\n----------------------------------------------------------------");
 //            customers.forEach(customer -> System.out.println(customers));
             for (Customer customer : customers) {
                 System.out.println(customer);
             }
-        }catch (SQLException e) {
+        }catch (SQLException | CustomerExistsException e) {
             System.out.println(e.getMessage());
         }
 //        try {

@@ -38,7 +38,7 @@ public class CompanyFacade extends ClientFacade {
     public void addCoupons(Coupon coupon) throws SQLException, CouponTitleExistsException {
         List<Coupon> companyCoupons = getCompanyCoupons();
         if (companyCoupons.size()==0){
-            couponsDao.addCoupon(coupon);
+            couponDao.addCoupon(coupon);
             return;
         }
         for (int i = 0; i < companyCoupons.size(); i++) {
