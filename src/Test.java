@@ -17,30 +17,44 @@ import java.util.ArrayList;
 
 public class Test {
     public static void main(String[] args) {
-        try{
-        Customer customer = new Customer("Tomer", "Tzigel", "Zigletomer@yahoo.com", "1912");
-        Company company = new Company("workout with us", "Sport@sport", "9999");
-        Coupon coupon = new Coupon(8, Category.SPORT, "Private workouts", "workouts",
-                Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
-                30, 30, " ");
-        Coupon coupon1 = new Coupon(7, Category.SPORT, "Gym", "workouts",
-                Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
-                30, 30, " ");
-        CustomerFacade customerFacade = (CustomerFacade) LoginManager.getInstance().login("Zigletomer@yahoo.com", "1912", ClientType.Customer);
-        System.out.println(coupon1);
-        customerFacade.purchaseCoupon(coupon1);
-        customerFacade.getCustomerCouponsByCategory(JavaBeans.Category.SPORT);
-        customerFacade.getCustomerCouponsUpToPrice(30);
-        System.out.println(customerFacade);
-        System.out.println(customerFacade.getCustomerCoupons());
-        System.out.println(customerFacade.getCustomerDetails());
+        try {
+            Customer customer = new Customer("Tomer", "Tzigel", "Zigletomer@yahoo.com", "1912");
+            Customer customer2 = new Customer("Tomer", "Tzigel", "Zigletomer@yahoo.com", "1912");
+//            System.out.println(customer);
+            Coupon coupon = new Coupon(8, Category.SPORT, "Private workouts", "workouts",
+                    Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
+                    30, 30, " ");
 
+            customer.getCoupons().add(coupon);
+            System.out.println(customer);
+            System.out.println(customer2);
 
+            System.out.println("--------------------------------------------");
+
+            //Sergey
             testAdminFacade();
+            //Amir
             testCompanyFacade();
 
+            //Tomer
+            Company company = new Company("workout with us", "Sport@sport", "9999");
+
+            Coupon coupon1 = new Coupon(7, Category.SPORT, "Gym", "workouts",
+                    Date.valueOf("2023-09-09"), Date.valueOf("2023-10-10"),
+                    30, 30, " ");
+            CustomerFacade customerFacade = (CustomerFacade) LoginManager.getInstance().login("Zigletomer@yahoo.com", "1912", ClientType.Customer);
+            System.out.println(coupon1);
+            customerFacade.purchaseCoupon(coupon1);
+            customerFacade.getCustomerCouponsByCategory(JavaBeans.Category.SPORT);
+            customerFacade.getCustomerCouponsUpToPrice(30);
+            System.out.println(customerFacade);
+            System.out.println(customerFacade.getCustomersCoupons());
+            System.out.println(customerFacade.getCustomerDetails());
+
+
         } catch (LoginErrorException | SQLException | CustomerExistsException | CompanyExistsException |
-                 CouponTitleExistsException | CouponDoesntExistException  | EmptyCartException | CouponPriceDoesntExist| NoCouponsToDeleteException e) {
+                 CouponTitleExistsException | CouponDoesntExistException | EmptyCartException | CouponPriceDoesntExist |
+                 NoCouponsToDeleteException e) {
             System.out.println(e.getMessage());
         }
 

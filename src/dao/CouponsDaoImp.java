@@ -141,7 +141,7 @@ public class CouponsDaoImp implements CouponsDao {
         try {
             PreparedStatement statement = con.prepareStatement("select * from coupons where id=" + couponId);
             ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
                 Coupon coupon = new Coupon(rs.getInt(1), rs.getInt(2),
                         (Category.values()[rs.getInt(3) - 1]), rs.getString(4), rs.getString(5), rs.getDate(6),
                         rs.getDate(7), rs.getInt(8), rs.getDouble(8),

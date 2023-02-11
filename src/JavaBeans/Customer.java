@@ -1,13 +1,14 @@
 package JavaBeans;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Customer {
     private int id;
     private String firstName, lastName, email, password;
-    private List<Coupon> coupons;
+    private List<Coupon> coupons = new ArrayList<>();
 
-    //cons to select from db
+    //constructor to select from db
     public Customer(int id, String firstName, String lastName, String email, String password) {
         this.id = id;
         this.firstName = firstName;
@@ -15,7 +16,7 @@ public class Customer {
         this.email = email;
         this.password = password;
     }
-    //cons to insert into db
+    //constructor to insert into db
     public Customer(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -69,7 +70,8 @@ public class Customer {
                 ", First Name: " + firstName+
                 ", Last Name: " + lastName+
                 ", Email: " + email+
-                ", Password: " + password;
+                ", Password: " + password +
+                ", Coupons: " + (coupons.size() > 0 ? coupons : "0");
     }
 
     public void setId(int id) {

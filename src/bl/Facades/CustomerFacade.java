@@ -28,7 +28,7 @@ public class CustomerFacade extends ClientFacade {
     private int customerID;
 
     public void purchaseCoupon(Coupon coupon) throws SQLException, CouponDoesntExistException, EmptyCartException {
-        List<Coupon> CustomerCoupons = getCustomerCoupons();
+        List<Coupon> CustomerCoupons = getCustomersCoupons();
         for (int i = 0; i < CustomerCoupons.size(); i++) {
             if (coupon.getTitle().equals(CustomerCoupons.get(i).getTitle())
                     || coupon.getAmount() <= 0 || Objects.equals(coupon.getEndDate(), Date.valueOf(LocalDate.now()))) {
@@ -39,11 +39,12 @@ public class CustomerFacade extends ClientFacade {
             System.out.println("Nice Buy");
         }
     }
-    public List<Coupon> getCustomerCoupons() throws SQLException, EmptyCartException {
+    public List<Coupon> getCustomersCoupons     () throws SQLException, EmptyCartException {
+        List<Coupon> allCoupons = couponDao.getAllCoupons();
         List<Coupon> customerCoupons = new ArrayList<>();
-        for (int i = 0; i < allCoupons.size(); i++) {
-            if (couponDao.didCouponAlreadyPurchased(allCoupons.get(i).getId(), customerID)) {
-                customerCoupons.add(allCoupons.get(i));
+        for (Coupon allCoupon : allCoupons) {
+            if (couponDao.didCouponAlreadyPurchased(allCoupon.getId(), customerID)) {
+                customerCoupons.add(allCoupon);
             }
         }
         if (customerCoupons.size()==0){
@@ -53,7 +54,7 @@ public class CustomerFacade extends ClientFacade {
     }
 
     public List<Coupon> getCustomerCouponsByCategory(Category category) throws SQLException, CouponDoesntExistException, EmptyCartException {
-            List<Coupon> CustomerCoupons = getCustomerCoupons();
+            List<Coupon> CustomerCoupons = getCustomersCoupons();
             List<Coupon> allCustomersCouponsByCategory = new ArrayList<>();
         for (Coupon customerCoupon : CustomerCoupons) {
             if (category.name().equals(customerCoupon.getCategory().name())) {
@@ -66,7 +67,7 @@ public class CustomerFacade extends ClientFacade {
     }
 
     public List<Coupon> getCustomerCouponsUpToPrice(double maxPrice) throws SQLException, CouponDoesntExistException, CouponPriceDoesntExist, EmptyCartException {
-        List<Coupon> CustomerCoupons = getCustomerCoupons();
+        List<Coupon> CustomerCoupons = getCustomersCoupons();
         List<Coupon> allCustomersCouponsByPrice = new ArrayList<>();
        for (int i = 0; i <CustomerCoupons.size() ; i++)
             {
