@@ -1,11 +1,15 @@
 package dao;
 
+import JavaBeans.Coupon;
 import JavaBeans.Customer;
 import dao.daoInterfaces.CustomersDao;
 import db.ConnectionPool;
 import Exceptions.CustomerExistsException;
+import enums.Category;
+
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerDaoImp implements CustomersDao {
     private ConnectionPool pool = ConnectionPool.getInstance();
@@ -152,7 +156,7 @@ public class CustomerDaoImp implements CustomersDao {
        ArrayList<Customer> costumers = new ArrayList<>();
        Connection con = pool.getConnection();
        try {
-           PreparedStatement query = con.prepareStatement("SELECT * FROM customers");
+           PreparedStatement query = con.prepareStatement("SELECT * FROM coupons.customers");
            ResultSet rs = query.executeQuery();
            while (rs.next()) {
                costumers.add(new Customer(rs.getInt(1), rs.getString(2),
@@ -161,10 +165,32 @@ public class CustomerDaoImp implements CustomersDao {
                    return null;
                }
            }
+           this.getCustomersCoupons(costumers);
            return costumers;
        }finally {
            pool.restoreConnection(con);
        }
+   }
+
+   private void getCustomersCoupons(List<Customer> customers) throws SQLException {
+        Connection conn = pool.getConnection();
+        try {
+            PreparedStatement query = conn.prepareStatement("SELECT coupons.coupons_vs_customers.customer_id, coupons.coupons.id, coupons.coupons.company_id, coupons.coupons.category_id, coupons.coupons.title, coupons.coupons.description, coupons.coupons.start_date, coupons.coupons.end_date, coupons.coupons.amount, coupons.coupons.price, coupons.coupons.img\n" +
+                    "FROM coupons.coupons, coupons.coupons_vs_customers, coupons.customers\n" +
+                    "WHERE coupons.coupons_vs_customers.customer_id = coupons.customers.id and coupons.coupons_vs_customers.coupon_id = coupons.coupons.id");
+            ResultSet rs = query.executeQuery();
+            while(rs.next()){
+                for(Customer customer : customers){
+                    if(customer.getId() == rs.getInt(1))
+                        customer.getCoupons().add(new Coupon(rs.getInt(2), rs.getInt(3),
+                                (Category.values()[rs.getInt(4) - 1]), rs.getString(5), rs.getString(6), rs.getDate(7),
+                                rs.getDate(8), rs.getInt(9), rs.getDouble(10),
+                                rs.getString(11)));
+                }
+            }
+        }finally {
+            pool.restoreConnection(conn);
+        }
    }
 
 
