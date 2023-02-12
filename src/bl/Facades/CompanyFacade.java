@@ -1,6 +1,8 @@
 package bl.Facades;
 
+import Exceptions.CouponDoesntExistException;
 import Exceptions.CouponTitleExistsException;
+import Exceptions.NoCouponsToDeleteException;
 import JavaBeans.Category;
 import JavaBeans.Company;
 import JavaBeans.Coupon;
@@ -35,6 +37,10 @@ public class CompanyFacade extends ClientFacade {
      */
     public void addCoupons(Coupon coupon) throws SQLException, CouponTitleExistsException {
         List<Coupon> companyCoupons = getCompanyCoupons();
+        if (companyCoupons.size()==0){
+            couponDao.addCoupon(coupon);
+            return;
+        }
         for (int i = 0; i < companyCoupons.size(); i++) {
             if (coupon.getTitle().equals(companyCoupons.get(i).getTitle())) {
                 throw new CouponTitleExistsException("You already published a coupon with the same title, please change the title");
@@ -135,7 +141,7 @@ public class CompanyFacade extends ClientFacade {
             if (coupon.getId()==id)
                 return coupon;
         }
-      throw new CouponDoesntExistException();
+      throw new CouponDoesntExistException("There Aren't any Coupon");
     }
 
     /**

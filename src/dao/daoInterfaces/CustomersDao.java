@@ -15,6 +15,6 @@ public interface CustomersDao {
     void updateCustomers(Customer customer) throws SQLException;
     void deleteCustomer(int customerId) throws SQLException;
     ArrayList<Customer> getAllCustomers() throws SQLException;
-    Customer getOneCustomer(int customerId) throws SQLException;
+    Customer getOneCustomer(int customerId) throws SQLException, CustomerExistsException;
 
 }

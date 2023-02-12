@@ -1,4 +1,4 @@
-package bl.Facades;
+package Exceptions;
 
 public class NoCouponsToDeleteException extends Exception{
 

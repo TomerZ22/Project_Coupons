@@ -1,11 +1,15 @@
 package dao;
 
+import JavaBeans.Coupon;
 import JavaBeans.Customer;
 import dao.daoInterfaces.CustomersDao;
 import db.ConnectionPool;
 import Exceptions.CustomerExistsException;
+import enums.Category;
+
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerDaoImp implements CustomersDao {
     private ConnectionPool pool = ConnectionPool.getInstance();
@@ -19,12 +23,13 @@ public class CustomerDaoImp implements CustomersDao {
     public void deleteCustomersCoupons(int customerId) throws SQLException {
         Connection con = pool.getConnection();
         try {
-            PreparedStatement ps = con.prepareStatement("DELETE FROM coupons_vs_customers WHERE custumers_id=" + customerId);
+            PreparedStatement ps = con.prepareStatement("DELETE FROM coupons_vs_customers WHERE customer_id=" + customerId);
             ps.execute();
-        }finally {
+        } finally {
             pool.restoreConnection(con);
         }
     }
+
     /**
      * This method is to check if the customer email is already exist in the database.
      *
@@ -39,16 +44,16 @@ public class CustomerDaoImp implements CustomersDao {
             PreparedStatement ps = con.prepareStatement("SELECT email FROM customers");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                if (rs.getString(4).equals(customer.getEmail())) {
-                    pool.restoreConnection(con);
+                if (rs.getString("email").equals(customer.getEmail())) {
                     throw new CustomerExistsException("Customer already exists");
                 }
             }
             return false;
-        }finally {
+        } finally {
             pool.restoreConnection(con);
         }
     }
+
     /**
      * This method returns a boolean if the email address and password are the same in the database.
      *
@@ -65,7 +70,8 @@ public class CustomerDaoImp implements CustomersDao {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 if (rs.getString(4).equals(email) && rs.getString(5).equals(password)) {
-                    return 1;
+                    int customerID = rs.getInt(1);
+                    return customerID;
                 }
             }
             return -1;
@@ -109,17 +115,18 @@ public class CustomerDaoImp implements CustomersDao {
                 id = rs.getInt(1);
             }
             customer.setId(id);
-        }finally {
+        } finally {
             pool.restoreConnection(con);
         }
     }
+
     @Override
     public void updateCustomers(Customer customer) throws SQLException {
         Connection con = pool.getConnection();
         try {
             PreparedStatement update = con.prepareStatement("UPDATE customers SET first_name= ?, last_name= ?, email= ?, password= ? WHERE id= " + customer.getId());
             prepareStatement(update, customer);
-        }finally {
+        } finally {
             pool.restoreConnection(con);
         }
     }
@@ -136,7 +143,7 @@ public class CustomerDaoImp implements CustomersDao {
         try {
             PreparedStatement delete = con.prepareStatement("DELETE FROM customers WHERE id= " + customerId);
             delete.execute();
-        }finally {
+        } finally {
             pool.restoreConnection(con);
         }
     }
@@ -148,24 +155,47 @@ public class CustomerDaoImp implements CustomersDao {
      * @throws SQLException - throws an exception if there was an error during the connection to the SQL.
      */
     @Override
-   public ArrayList<Customer> getAllCustomers() throws SQLException {
-       ArrayList<Customer> costumers = new ArrayList<>();
-       Connection con = pool.getConnection();
-       try {
-           PreparedStatement query = con.prepareStatement("SELECT * FROM customers");
-           ResultSet rs = query.executeQuery();
-           while (rs.next()) {
-               costumers.add(new Customer(rs.getInt(1), rs.getString(2),
-                       rs.getString(3), rs.getString(4), rs.getString(5)));
-               if (costumers.size() == 0) {
-                   return null;
-               }
-           }
-           return costumers;
-       }finally {
-           pool.restoreConnection(con);
-       }
-   }
+    public ArrayList<Customer> getAllCustomers() throws SQLException {
+        ArrayList<Customer> costumers = new ArrayList<>();
+        Connection con = pool.getConnection();
+        try {
+            PreparedStatement query = con.prepareStatement("SELECT * FROM coupons.customers");
+            ResultSet rs = query.executeQuery();
+            while (rs.next()) {
+                costumers.add(new Customer(rs.getInt(1), rs.getString(2),
+                        rs.getString(3), rs.getString(4), rs.getString(5)));
+                if (costumers.size() == 0) {
+                    return null;
+                }
+            }
+            this.getCustomersCoupons(costumers);
+            return costumers;
+        } finally {
+            pool.restoreConnection(con);
+        }
+    }
+
+    private void getCustomersCoupons(List<Customer> customers) throws SQLException {
+        Connection conn = pool.getConnection();
+        try {
+            PreparedStatement query = conn.prepareStatement("SELECT coupons.coupons_vs_customers.customer_id, coupons.coupons.id, coupons.coupons.company_id, coupons.coupons.category_id, coupons.coupons.title, coupons.coupons.description, coupons.coupons.start_date, coupons.coupons.end_date, coupons.coupons.amount, coupons.coupons.price, coupons.coupons.img\n" +
+                    "FROM coupons.coupons, coupons.coupons_vs_customers, coupons.customers\n" +
+                    "WHERE coupons.coupons_vs_customers.customer_id = coupons.customers.id and coupons.coupons_vs_customers.coupon_id = coupons.coupons.id");
+            ResultSet rs = query.executeQuery();
+            while (rs.next()) {
+                for (Customer customer : customers) {
+                    if (customer.getId() == rs.getInt(1))
+                        customer.getCoupons().add(new Coupon(rs.getInt(2), rs.getInt(3),
+                                (Category.values()[rs.getInt(4) - 1]), rs.getString(5), rs.getString(6), rs.getDate(7),
+                                rs.getDate(8), rs.getInt(9), rs.getDouble(10),
+                                rs.getString(11)));
+                }
+            }
+        } finally {
+            pool.restoreConnection(conn);
+        }
+    }
+
 
     /**
      * This method returns you a costumer by its ID.
@@ -174,18 +204,44 @@ public class CustomerDaoImp implements CustomersDao {
      * @return - The costumer by its ID or null if there is no such id in the DB.
      * @throws SQLException - Throws an exception if there was an error during the connection to the SQL.
      */
-   @Override
-    public Customer getOneCustomer(int customerId) throws SQLException {
-       Connection con = pool.getConnection();
-       try {
-           PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM customers where id=" + customerId);
-           ResultSet rs = gettingCustomer.executeQuery();
-           if (rs.next()) {
-               return new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
-           }
-           return null;
-       }finally {
-           pool.restoreConnection(con);
-       }
+    @Override
+    public Customer getOneCustomer(int customerId) throws SQLException, CustomerExistsException {
+        Connection con = pool.getConnection();
+        Customer customer;
+        try {
+            PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM customers where id=" + customerId);
+            ResultSet rs = gettingCustomer.executeQuery();
+            if (rs.next()) {
+//               return new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+                customer = new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+            } else
+                throw new CustomerExistsException("The customer does not exist");
+
+            this.settingCustomerCoupon(customer);
+            return customer;
+
+
+        } finally {
+            pool.restoreConnection(con);
+        }
+    }
+
+    private void settingCustomerCoupon(Customer customer) throws SQLException {
+        Connection conn = pool.getConnection();
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT coupons.coupons_vs_customers.customer_id, coupons.coupons.id, coupons.coupons.company_id, coupons.coupons.category_id, coupons.coupons.title, coupons.coupons.description, coupons.coupons.start_date, coupons.coupons.end_date, coupons.coupons.amount, coupons.coupons.price, coupons.coupons.img\n" +
+                    "FROM coupons.coupons, coupons.coupons_vs_customers, coupons.customers\n" +
+                    "WHERE coupons.coupons_vs_customers.customer_id = coupons.customers.id and coupons.coupons_vs_customers.coupon_id = coupons.coupons.id");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                if (customer.getId() == rs.getInt(1))
+                    customer.getCoupons().add(new Coupon(rs.getInt(2), rs.getInt(3),
+                            (Category.values()[rs.getInt(4) - 1]), rs.getString(5), rs.getString(6), rs.getDate(7),
+                            rs.getDate(8), rs.getInt(9), rs.getDouble(10),
+                            rs.getString(11)));
+            }
+        } finally {
+            pool.restoreConnection(conn);
+        }
     }
 }
