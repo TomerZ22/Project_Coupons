@@ -1,5 +1,6 @@
 package dao;
 
+import Exceptions.CouponDoesntExistException;
 import JavaBeans.Coupon;
 import dao.daoInterfaces.CouponsDao;
 import db.ConnectionPool;
@@ -110,7 +111,7 @@ public class CouponsDaoImp implements CouponsDao {
      * @throws SQLException
      */
     @Override
-    public List<Coupon> getAllCoupons() throws SQLException {
+    public List<Coupon> getAllCoupons() throws SQLException, CouponDoesntExistException {
         List<Coupon> coupons = new ArrayList<>();
         Connection con = pool.getConnection();
         try {
@@ -123,7 +124,7 @@ public class CouponsDaoImp implements CouponsDao {
                         rs.getString(10)));
             }
             if (coupons.size()==0){
-                return null;
+                throw new CouponDoesntExistException();
             }
             return coupons;
 
@@ -169,7 +170,7 @@ public class CouponsDaoImp implements CouponsDao {
     public void addCouponPurchase(int customerID, int couponID) throws SQLException {
         Connection con = pool.getConnection();
         try {
-            PreparedStatement statement = con.prepareStatement("insert into coupons_vs_customers values(?,?)");
+            PreparedStatement statement = con.prepareStatement("INSERT INTO `coupons`.`coupons_vs_customers` (`customer_id`, `coupon_id`) VALUES(?, ?)");
             statement.setInt(1, customerID);
             statement.setInt(2, couponID);
             statement.execute();

@@ -1,5 +1,6 @@
 package dao.daoInterfaces;
 
+import Exceptions.CouponDoesntExistException;
 import JavaBeans.Coupon;
 
 import java.sql.SQLException;
@@ -9,7 +10,7 @@ public interface CouponsDao {
     void addCoupon(Coupon coupon) throws SQLException;
     void updateCoupon(Coupon coupon) throws SQLException;
     void deleteCoupon(int couponId) throws SQLException;
-    List<Coupon> getAllCoupons() throws SQLException;
+    List<Coupon> getAllCoupons() throws SQLException, CouponDoesntExistException;
     Coupon getOneCoupon(int couponId) throws SQLException;
     void addCouponPurchase(int customerID, int couponID) throws SQLException;
     void deleteCouponPurchase(int customerID, int couponID) throws SQLException;

@@ -1,10 +1,14 @@
 package JavaBeans;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Company {
     private int id;
     private String name;
     private String email;
     private String password;
+    private List<Coupon> coupons = new ArrayList<Coupon>();
 
     // when reading info from db since it contains id
     public Company(int id, String name, String email, String password) {
@@ -53,11 +57,16 @@ public class Company {
         this.password = password;
     }
 
+    public List<Coupon> getCoupons() {
+        return coupons;
+    }
+
     @Override
     public String toString() {
         return "Company's id: " + id +
                 ", Name: " + name +
                 ", Email: " + email +
-                ", Password: '" + password;
+                ", Password: '" + password +
+                ", Company Coupons: " + (coupons.size() > 0 ? coupons : "0");
     }
 }

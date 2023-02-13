@@ -1,9 +1,12 @@
 package dao;
 
 import JavaBeans.Company;
+import JavaBeans.Coupon;
+import JavaBeans.Customer;
 import dao.daoInterfaces.CompaniesDao;
 import db.ConnectionPool;
 import Exceptions.CompanyExistsException;
+import enums.Category;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -170,18 +173,43 @@ public class CompaniesDaoImp implements CompaniesDao {
     @Override
     public Company getOneCompany(int companyId) throws SQLException {
         Connection con = pool.getConnection();
+        Company company;
         try {
             PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM companies where id=" + companyId);
             ResultSet rs = gettingCustomer.executeQuery();
             if (rs.next()) {
-                return new Company(rs.getInt(1), rs.getString(2),
+                company = new Company(rs.getInt(1), rs.getString(2),
                         rs.getString(3), rs.getString(4));
+                setCompanyCoupon(company);
+                return company;
             }
             return null;
         } finally {
             pool.restoreConnection(con);
         }
     }
+    //This method is for getting the coupons of the company
+    private void setCompanyCoupon(Company company) throws SQLException {
+        Connection conn  = pool.getConnection();
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT coupons.companies.id, companies.company_name, companies.email, companies.password, coupons.coupons.id, coupons.coupons.company_id, coupons.coupons.category_id, coupons.coupons.title, coupons.coupons.description, coupons.coupons.start_date, coupons.coupons.end_date, coupons.coupons.amount, coupons.coupons.price, coupons.coupons.image \n" +
+                    "FROM coupons.companies, coupons.coupons\n" +
+                    "where coupons.companies.id = coupons.coupons.company_id");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                if(company.getId() == rs.getInt(6))
+                    company.getCoupons().add(new Coupon(rs.getInt(5), rs.getInt(6),
+                            (Category.values()[rs.getInt(7) - 1]), rs.getString(8), rs.getString(9), rs.getDate(10),
+                            rs.getDate(11), rs.getInt(12), rs.getDouble(13),
+                            rs.getString(14)));
+            }
+
+        }finally {
+            pool.restoreConnection(conn);
+        }
+    }
+
+
 
     /**
      * This Method Gets All The Companies From The DataBase
@@ -203,11 +231,35 @@ public class CompaniesDaoImp implements CompaniesDao {
             if (companies.size() == 0) {
                 return null;
             }
+            getCompaniesCoupons(companies);
             return companies;
         } finally {
             pool.restoreConnection(con);
         }
     }
+
+    private void getCompaniesCoupons(List<Company> companies) throws SQLException {
+        Connection conn = pool.getConnection();
+        try {
+            PreparedStatement query = conn.prepareStatement("SELECT coupons.companies.id, companies.company_name, companies.email, companies.password, coupons.coupons.id, coupons.coupons.company_id, coupons.coupons.category_id, coupons.coupons.title, coupons.coupons.description, coupons.coupons.start_date, coupons.coupons.end_date, coupons.coupons.amount, coupons.coupons.price, coupons.coupons.image \n" +
+                    "FROM coupons.companies, coupons.coupons\n" +
+                    "where coupons.companies.id = coupons.coupons.company_id");
+            ResultSet rs = query.executeQuery();
+            while (rs.next()) {
+                for (Company company : companies) {
+                    if (company.getId() == rs.getInt(1))
+                        company.getCoupons().add(new Coupon(rs.getInt(5), rs.getInt(6),
+                                (Category.values()[rs.getInt(7) - 1]), rs.getString(8), rs.getString(9), rs.getDate(10),
+                                rs.getDate(11), rs.getInt(12), rs.getDouble(13),
+                                rs.getString(14)));
+                }
+            }
+        } finally {
+            pool.restoreConnection(conn);
+        }
+    }
+
+
 
     /**
      * This method is used to update the company information in the database and check if the name didn't change

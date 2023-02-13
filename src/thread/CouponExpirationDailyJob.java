@@ -1,5 +1,6 @@
 package thread;
 
+import Exceptions.CouponDoesntExistException;
 import JavaBeans.Coupon;
 import dao.CouponsDaoImp;
 import dao.daoInterfaces.CouponsDao;
@@ -35,7 +36,7 @@ public class CouponExpirationDailyJob implements Runnable {
                 }
                 Thread.sleep(1000);
             } catch (InterruptedException ignored) {
-            } catch (SQLException e) {
+            } catch (SQLException | CouponDoesntExistException e) {
                 System.out.println(e.getMessage());
             }
         }

@@ -3,9 +3,9 @@ package bl.Facades;
 import Exceptions.CouponDoesntExistException;
 import Exceptions.CouponTitleExistsException;
 import Exceptions.NoCouponsToDeleteException;
-import JavaBeans.Category;
 import JavaBeans.Company;
 import JavaBeans.Coupon;
+import enums.Category;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class CompanyFacade extends ClientFacade {
      * @throws SQLException
      * @throws CouponTitleExistsException
      */
-    public void addCoupons(Coupon coupon) throws SQLException, CouponTitleExistsException {
+    public void addCoupons(Coupon coupon) throws SQLException, CouponTitleExistsException, CouponDoesntExistException {
         List<Coupon> companyCoupons = getCompanyCoupons();
         if (companyCoupons.size()==0){
             couponDao.addCoupon(coupon);
@@ -85,7 +85,7 @@ public class CompanyFacade extends ClientFacade {
      * @return list of coupons
      * @throws SQLException
      */
-    public List<Coupon> getCompanyCoupons () throws SQLException {
+    public List<Coupon> getCompanyCoupons () throws SQLException, CouponDoesntExistException {
         List<Coupon>allCoupons=couponDao.getAllCoupons();
         List<Coupon>companyCoupons=new ArrayList<>();
         for (int i = 0; i <allCoupons.size(); i++) {
@@ -101,11 +101,11 @@ public class CompanyFacade extends ClientFacade {
      * @returnlist of the company's coupons from a given category
      * @throws SQLException
      */
-    public List<Coupon> getCompanyCouponsByCategory (Category category) throws SQLException {
+    public List<Coupon> getCompanyCouponsByCategory (Category category) throws SQLException, CouponDoesntExistException {
         List<Coupon> companyCoupons= getCompanyCoupons();
         List<Coupon>getCompanyCouponsByCategory=new ArrayList<>();
         for (int i = 0; i < companyCoupons.size(); i++) {
-            if (category.name()==companyCoupons.get(i).getCategory().name())
+            if (category.name().equals(companyCoupons.get(i).getCategory().name()))
                 getCompanyCouponsByCategory.add(companyCoupons.get(i));
         }
         return getCompanyCouponsByCategory;
@@ -117,7 +117,7 @@ public class CompanyFacade extends ClientFacade {
      * @return list of coupons
      * @throws SQLException
      */
-    public List<Coupon> getCompanyCouponsUpToPrice (double maxPrice) throws SQLException {
+    public List<Coupon> getCompanyCouponsUpToPrice (double maxPrice) throws SQLException, CouponDoesntExistException {
         List<Coupon> companyCoupons= getCompanyCoupons();
         List<Coupon>companyCouponsUpToPrice=new ArrayList<>();
         for (int i = 0; i < companyCoupons.size(); i++) {

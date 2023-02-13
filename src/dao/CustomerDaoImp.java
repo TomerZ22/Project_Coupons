@@ -178,7 +178,7 @@ public class CustomerDaoImp implements CustomersDao {
     private void getCustomersCoupons(List<Customer> customers) throws SQLException {
         Connection conn = pool.getConnection();
         try {
-            PreparedStatement query = conn.prepareStatement("SELECT coupons.coupons_vs_customers.customer_id, coupons.coupons.id, coupons.coupons.company_id, coupons.coupons.category_id, coupons.coupons.title, coupons.coupons.description, coupons.coupons.start_date, coupons.coupons.end_date, coupons.coupons.amount, coupons.coupons.price, coupons.coupons.img\n" +
+            PreparedStatement query = conn.prepareStatement("SELECT coupons.coupons_vs_customers.customer_id, coupons.coupons.id, coupons.coupons.company_id, coupons.coupons.category_id, coupons.coupons.title, coupons.coupons.description, coupons.coupons.start_date, coupons.coupons.end_date, coupons.coupons.amount, coupons.coupons.price, coupons.coupons.image\n" +
                     "FROM coupons.coupons, coupons.coupons_vs_customers, coupons.customers\n" +
                     "WHERE coupons.coupons_vs_customers.customer_id = coupons.customers.id and coupons.coupons_vs_customers.coupon_id = coupons.coupons.id");
             ResultSet rs = query.executeQuery();
@@ -209,7 +209,7 @@ public class CustomerDaoImp implements CustomersDao {
         Connection con = pool.getConnection();
         Customer customer;
         try {
-            PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM customers where id=" + customerId);
+            PreparedStatement gettingCustomer = con.prepareStatement("SELECT * FROM coupons.customers where id=" + customerId);
             ResultSet rs = gettingCustomer.executeQuery();
             if (rs.next()) {
 //               return new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));

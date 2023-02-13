@@ -6,8 +6,10 @@ import bl.Facades.AdminFacade;
 import bl.Facades.CompanyFacade;
 import bl.Facades.CustomerFacade;
 import bl.Facades.login.LoginManager;
+import dao.CompaniesDaoImp;
 import enums.Category;
 import enums.ClientType;
+import thread.CouponExpirationDailyJob;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -16,57 +18,43 @@ import java.util.ArrayList;
 public class Test {
     public static void main(String[] args) {
         try {
+            Thread thread = new Thread(new CouponExpirationDailyJob());
+            thread.start();
 
-//            //Sergey
-//            testAdminFacade();
-//            //Amir
-//            testCompanyFacade();
+            testAdminFacade();
+            testCompanyFacade();
+            testCustomerFacade();
 
-
-            CustomerFacade customerFacade = (CustomerFacade) LoginManager.getInstance().login("Orel@Orel", "1910", ClientType.Customer);
-
-           Coupon coupon= new Coupon(1,Category.SPORT,"bla sport","only bla people",
-                   Date.valueOf("2023-01-01"),Date.valueOf("2023-05-01"),35,35," ");
-
-Coupon coupon1=customerFacade.getAllCoupons().get(13);
-
-//            customerFacade.purchaseCoupon(coupon1);
-//            System.out.println( customerFacade.getAllCoupons());
-//            System.out.println(customerFacade.getCustomerDetails());
-//            System.out.println(customerFacade.getCustomersCoupons());
-
-
-//            System.out.println(customerFacade.getCustomersCoupons());
-
-
-//            System.out.println(customerFacade.getCustomerCouponsByCategory(JavaBeans.Category.SPORT));
-//            System.out.println(customerFacade.getCustomerCouponsUpToPrice(40));
-//            System.out.println(customerFacade);
-//            System.out.println(customerFacade.getCustomersCoupons());
-//            System.out.println(customerFacade.getCustomerDetails());
-//
-//
-//        } catch (LoginErrorException | SQLException | CustomerExistsException | CompanyExistsException |
-//                 CouponTitleExistsException | CouponDoesntExistException | EmptyCartException | CouponPriceDoesntExist |
-//                 NoCouponsToDeleteException e) {
-//            System.out.println(e.getMessage());
-//        }
-
-        } catch (SQLException | LoginErrorException e){
+            thread.stop();
+        } catch (SQLException | LoginErrorException | CouponDoesntExistException | CustomerExistsException |
+                 CouponPriceDoesntExist | CouponAlreadyBoughtException | CompanyExistsException e) {
             System.out.println(e.getMessage());
         }
+
+        //Latest checking
+//        try{
+//            CompaniesDaoImp companiesDaoImp = new CompaniesDaoImp();
+//            Company company = companiesDaoImp.getOneCompany(1);
+//            System.out.println(company);
+//            System.out.println("--------------------------------");
+//            ArrayList<Company> companies = (ArrayList<Company>) companiesDaoImp.getAllCompanies();
+//            for (Company c : companies) {
+//                System.out.println(c);
+//            }
+//            System.out.println("--------------------------------");
+//            testAdminFacade();
+//        } catch (SQLException | CustomerExistsException | LoginErrorException | CompanyExistsException e) {
+//            System.out.println(e.getMessage());
+//        }
     }
 
 
-    public static void testAdminFacade() {
+    public static void testAdminFacade() throws SQLException, CompanyExistsException, LoginErrorException, CustomerExistsException {
         //Logging in
 
-        AdminFacade adminFacade = null;
-        try {
-            adminFacade = (AdminFacade) LoginManager.getInstance().login("admin@admin.com", "admin", ClientType.Administrator);
-        } catch (LoginErrorException | SQLException e) {
-            System.out.println(e.getMessage());
-        }
+
+          AdminFacade adminFacade = (AdminFacade) LoginManager.getInstance().login("admin@admin.com", "admin", ClientType.Administrator);
+
 
         //Companies Methods:
         Company c1 = new Company("Elon Musk", "spaceXYZ@TSLA.com", "asdacvnh21  213-sdfg!@#as");
@@ -77,34 +65,20 @@ Coupon coupon1=customerFacade.getAllCoupons().get(13);
 
         c1.setEmail("topGelonX@TSLA.com");
         c1.setPassword("IDK123!");
-        try {
+
             adminFacade.updateCompany(c1); //Update
-        } catch (SQLException | CompanyExistsException e) {
-            System.out.println(e.getMessage());
-        }
 
-        try {
             adminFacade.deleteCompany(c1); //Delete
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
 
-        ArrayList<Company> companies = null; //List of companies
-        try {
-            companies = (ArrayList<Company>) adminFacade.getAllCompanies();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        System.out.println("All Companies");
+        //List of companies
+        ArrayList<Company>   companies = (ArrayList<Company>) adminFacade.getAllCompanies();
         for (Company c : companies) {
             System.out.println(c);
         }
-
-        Company company = null; //One company from the DB
-        try {
-            company = adminFacade.getCompanyById(1);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        System.out.println("One company");
+        //One company from the DB
+        Company company = adminFacade.getCompanyById(1);
         System.out.println(company);
         //----------------------------------------------------------------//
 
@@ -116,16 +90,21 @@ Coupon coupon1=customerFacade.getAllCoupons().get(13);
             System.out.println(e.getMessage());
         }
 
-//        customer.setLastName("Bezossss");
-//        customer.setFirstName("My name is Jeff");
-//        customer.setPassword("JeffmyNameis");
-//        adminFacade.updateCustomer(customer); //Update
+        customer.setLastName("Bezossss");
+        customer.setFirstName("My name is Jeff");
+        customer.setPassword("JeffmyNameis");
+        adminFacade.updateCustomer(customer); //Update
 //
-//        adminFacade.deleteCustomer(1);//Delete
-//
-//        ArrayList<Customer> customers = (ArrayList<Customer>) adminFacade.getAllCustomers();//All customers
-//
-//        Customer customer2 = adminFacade.getCustomerByID(1);//Get customer
+        adminFacade.deleteCustomer(1);//Delete
+
+        System.out.println("All customers");
+        ArrayList<Customer> customers = (ArrayList<Customer>) adminFacade.getAllCustomers();//All customers
+        for (Customer c : customers) {
+            System.out.println(c);
+        }
+        System.out.println("One customer");
+        Customer customer2 = adminFacade.getCustomerByID(1);//Get customer
+        System.out.println(customer2);
 
     }
 
@@ -158,7 +137,7 @@ Coupon coupon1=customerFacade.getAllCoupons().get(13);
         //adding a coupons to the db
         try {
             companyFacade.addCoupons(coupon1);
-        } catch (SQLException | CouponTitleExistsException e) {
+        } catch (SQLException | CouponTitleExistsException | CouponDoesntExistException e) {
             System.out.println(e.getMessage());
         }
 
@@ -196,6 +175,33 @@ Coupon coupon1=customerFacade.getAllCoupons().get(13);
 
         //get the company's details
 //            companyFacade.getCompanyDetails();
+    }
+
+    public static void testCustomerFacade() throws CustomerExistsException, SQLException, LoginErrorException, CouponDoesntExistException, CouponPriceDoesntExist, CouponAlreadyBoughtException {
+        CustomerFacade customerFacade = (CustomerFacade) LoginManager.getInstance().login("abc", "123", ClientType.Customer);
+        System.out.println(customerFacade.getCustomerDetails());
+
+        Coupon coupon = new Coupon(2,2, Category.SPORT, "asd", "asd",
+                Date.valueOf("2023-01-01"), Date.valueOf("2023-12-12"), 500, 500, "");
+        Coupon coupon2 = new Coupon(4,2, Category.SPORT, "abc", "def",
+                Date.valueOf("2023-01-01"), Date.valueOf("2023-12-12"), 12, 12, "");
+        Coupon coupon3 = new Coupon(5,1, Category.SPA, "asd", "asd",
+                Date.valueOf("2023-01-01"), Date.valueOf("2023-12-12"), 1000, 1231, "");
+            customerFacade.purchaseCoupon(coupon);
+            customerFacade.purchaseCoupon(coupon2);
+            customerFacade.purchaseCoupon(coupon3);
+
+        ArrayList<Coupon> coupons = (ArrayList<Coupon>) customerFacade.getCustomerCouponsByCategory(Category.SPORT);
+        System.out.println(coupons);
+        System.out.println("--------------------------------");
+        ArrayList<Coupon> customerCoupons = (ArrayList<Coupon>) customerFacade.getCustomersCoupons();
+        System.out.println(customerCoupons);
+        System.out.println("--------------------------------");
+        ArrayList<Coupon> orderByPriceCoupons = (ArrayList<Coupon>) customerFacade.getCustomerCouponsUpToPrice(12.0);
+        System.out.println(orderByPriceCoupons);
+        System.out.println("--------------------------------");
+        ArrayList<Coupon> allCoupons = (ArrayList<Coupon>) customerFacade.getAllCoupons();
+        System.out.println(allCoupons);
     }
 
 }
