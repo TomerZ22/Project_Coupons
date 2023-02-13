@@ -229,9 +229,7 @@ public class CustomerDaoImp implements CustomersDao {
     private void settingCustomerCoupon(Customer customer) throws SQLException {
         Connection conn = pool.getConnection();
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT coupons.coupons_vs_customers.customer_id, coupons.coupons.id, coupons.coupons.company_id, coupons.coupons.category_id, coupons.coupons.title, coupons.coupons.description, coupons.coupons.start_date, coupons.coupons.end_date, coupons.coupons.amount, coupons.coupons.price, coupons.coupons.img\n" +
-                    "FROM coupons.coupons, coupons.coupons_vs_customers, coupons.customers\n" +
-                    "WHERE coupons.coupons_vs_customers.customer_id = coupons.customers.id and coupons.coupons_vs_customers.coupon_id = coupons.coupons.id");
+            PreparedStatement ps = conn.prepareStatement("SELECT coupons.coupons_vs_customers.customer_id, coupons.coupons.id, coupons.coupons.company_id, coupons.coupons.category_id, coupons.coupons.title, coupons.coupons.description, coupons.coupons.start_date, coupons.coupons.end_date, coupons.coupons.amount, coupons.coupons.price, coupons.coupons.image FROM coupons.coupons, coupons.coupons_vs_customers, coupons.customers WHERE coupons.coupons_vs_customers.customer_id = coupons.customers.id and coupons.coupons_vs_customers.coupon_id = coupons.coupons.id");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 if (customer.getId() == rs.getInt(1))

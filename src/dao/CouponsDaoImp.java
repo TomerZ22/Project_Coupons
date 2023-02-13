@@ -117,12 +117,16 @@ public class CouponsDaoImp implements CouponsDao {
             PreparedStatement statement = con.prepareStatement("select * from coupons");
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                coupons.add(new Coupon(rs.getInt(1), rs.getInt(2), Category.values()[rs.getInt(3)- 1],
+                coupons.add(new Coupon(rs.getInt(1), rs.getInt(2), Category.values()[rs.getInt(3)-1],
                         rs.getString(4), rs.getString(5), rs.getDate(6),
                         rs.getDate(7), rs.getInt(8), rs.getDouble(9),
                         rs.getString(10)));
             }
+            if (coupons.size()==0){
+                return null;
+            }
             return coupons;
+
         } finally {
             pool.restoreConnection(con);
         }
@@ -178,15 +182,15 @@ public class CouponsDaoImp implements CouponsDao {
     /**
      * This method delete from the table customers vs coupons a given purchase that we want to undo
      *
-     * @param customerID
-     * @param couponID
+     * @param customerId
+     * @param couponId
      * @throws SQLException
      */
     @Override
-    public void deleteCouponPurchase(int customerID, int couponID) throws SQLException {
+    public void deleteCouponPurchase(int couponId, int customerId) throws SQLException {
         Connection con = pool.getConnection();
         try {
-            PreparedStatement statement = con.prepareStatement("delete from coupons_vs_customers where customer_id=" + customerID + " and coupon_id=" + couponID);
+            PreparedStatement statement = con.prepareStatement("delete from coupons_vs_customers where customer_id=" + customerId + " and coupon_id=" + couponId);
             statement.execute();
             System.out.println("coupon purchase deleted successfully");
         }finally {
