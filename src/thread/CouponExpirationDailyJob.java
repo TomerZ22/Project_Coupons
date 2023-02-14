@@ -11,9 +11,9 @@ import java.util.Date;
 
 public class CouponExpirationDailyJob implements Runnable {
     private CouponsDao couponsDao;
-
-
     private boolean quit;
+
+    private Thread thread = new Thread(this, "dailyJob");
 
     public CouponExpirationDailyJob() {
         quit = false;
@@ -34,15 +34,20 @@ public class CouponExpirationDailyJob implements Runnable {
                         couponsDao.deleteCoupon(coupon.getId());
                     }
                 }
-                Thread.sleep(1000);
-            } catch (InterruptedException ignored) {
-            } catch (SQLException | CouponDoesntExistException e) {
+                Thread.sleep(1000 * 60 * 60 * 24);
+            } catch (InterruptedException | SQLException | CouponDoesntExistException e) {
                 System.out.println(e.getMessage());
             }
         }
     }
+    public void start(){
+        this.thread.start();
+        quit=false;
+    }
 
-    public void stop() {
+    public void stoppy() {
+        this.thread.interrupt();
         quit = true;
+
     }
 }

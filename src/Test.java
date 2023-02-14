@@ -6,7 +6,6 @@ import bl.Facades.AdminFacade;
 import bl.Facades.CompanyFacade;
 import bl.Facades.CustomerFacade;
 import bl.Facades.login.LoginManager;
-import dao.CompaniesDaoImp;
 import enums.Category;
 import enums.ClientType;
 import thread.CouponExpirationDailyJob;
@@ -18,14 +17,15 @@ import java.util.ArrayList;
 public class Test {
     public static void main(String[] args) {
         try {
-            Thread thread = new Thread(new CouponExpirationDailyJob());
-            thread.start();
+        CouponExpirationDailyJob job = new CouponExpirationDailyJob();
+        job.start();
 
             testAdminFacade();
             testCompanyFacade();
             testCustomerFacade();
 
-            thread.stop();
+            job.stoppy();
+
         } catch (SQLException | LoginErrorException | CouponDoesntExistException | CustomerExistsException |
                  CouponPriceDoesntExist | CouponAlreadyBoughtException | CompanyExistsException e) {
             System.out.println(e.getMessage());
@@ -53,7 +53,7 @@ public class Test {
         //Logging in
 
 
-          AdminFacade adminFacade = (AdminFacade) LoginManager.getInstance().login("admin@admin.com", "admin", ClientType.Administrator);
+        AdminFacade adminFacade = (AdminFacade) LoginManager.getInstance().login("admin@admin.com", "admin", ClientType.Administrator);
 
 
         //Companies Methods:
@@ -66,13 +66,13 @@ public class Test {
         c1.setEmail("topGelonX@TSLA.com");
         c1.setPassword("IDK123!");
 
-            adminFacade.updateCompany(c1); //Update
+        adminFacade.updateCompany(c1); //Update
 
-            adminFacade.deleteCompany(c1); //Delete
+        adminFacade.deleteCompany(c1); //Delete
 
         System.out.println("All Companies");
         //List of companies
-        ArrayList<Company>   companies = (ArrayList<Company>) adminFacade.getAllCompanies();
+        ArrayList<Company> companies = (ArrayList<Company>) adminFacade.getAllCompanies();
         for (Company c : companies) {
             System.out.println(c);
         }
@@ -181,15 +181,15 @@ public class Test {
         CustomerFacade customerFacade = (CustomerFacade) LoginManager.getInstance().login("abc", "123", ClientType.Customer);
         System.out.println(customerFacade.getCustomerDetails());
 
-        Coupon coupon = new Coupon(2,2, Category.SPORT, "asd", "asd",
+        Coupon coupon = new Coupon(2, 2, Category.SPORT, "asd", "asd",
                 Date.valueOf("2023-01-01"), Date.valueOf("2023-12-12"), 500, 500, "");
-        Coupon coupon2 = new Coupon(4,2, Category.SPORT, "abc", "def",
+        Coupon coupon2 = new Coupon(4, 2, Category.SPORT, "abc", "def",
                 Date.valueOf("2023-01-01"), Date.valueOf("2023-12-12"), 12, 12, "");
-        Coupon coupon3 = new Coupon(5,1, Category.SPA, "asd", "asd",
+        Coupon coupon3 = new Coupon(5, 1, Category.SPA, "asd", "asd",
                 Date.valueOf("2023-01-01"), Date.valueOf("2023-12-12"), 1000, 1231, "");
-            customerFacade.purchaseCoupon(coupon);
-            customerFacade.purchaseCoupon(coupon2);
-            customerFacade.purchaseCoupon(coupon3);
+        customerFacade.purchaseCoupon(coupon);
+        customerFacade.purchaseCoupon(coupon2);
+        customerFacade.purchaseCoupon(coupon3);
 
         ArrayList<Coupon> coupons = (ArrayList<Coupon>) customerFacade.getCustomerCouponsByCategory(Category.SPORT);
         System.out.println(coupons);
